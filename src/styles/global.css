@@ -1,0 +1,90 @@
+:root {
+  --bg-deep: #0a0e1a;
+  --bg-primary: #0f1629;
+  --bg-card: #151d35;
+  --bg-card-hover: #1a2340;
+  --bg-elevated: #1c2a4a;
+  --text-primary: #e8ecf4;
+  --text-secondary: #8892b0;
+  --text-muted: #4a5578;
+  --accent-primary: #64ffda;
+  --accent-secondary: #4fc3f7;
+  --accent-gold: #ffb74d;
+  --accent-warm: #ffcc80;
+  --accent-emerge: #ffd54f;
+  --border-subtle: rgba(100, 255, 218, 0.08);
+  --border-active: rgba(100, 255, 218, 0.25);
+  --glow-strong: 0 0 40px rgba(100, 255, 218, 0.15);
+  --glow-gold: 0 0 30px rgba(255, 183, 77, 0.2);
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-sans: 'Noto Sans SC', -apple-system, sans-serif;
+  --nav-width: 56px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-active) var(--bg-deep);
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border-active); border-radius: 3px; }
+
+/* Selection */
+::selection {
+  background: rgba(100, 255, 218, 0.2);
+  color: var(--accent-primary);
+}
+
+/* Background gradient layers */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79, 195, 247, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 40%, rgba(100, 255, 218, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 20% 70%, rgba(255, 183, 77, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Grid pattern overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(100, 255, 218, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 255, 218, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+/* Utility */
+.mono { font-family: var(--font-mono); }
+.gold { color: var(--accent-gold); }
+.accent { color: var(--accent-primary); }
