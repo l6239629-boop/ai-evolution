@@ -298,7 +298,7 @@ function GlossaryPanel({ onClose, onNavigate }) {
                           style={{display:'block',width:'100%',padding:'10px 24px 10px 40px',
                             background:'none',border:'none',cursor:'pointer',textAlign:'left'}}>
                           <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
-                            <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:600,color:'var(--text-primary)'}}>{item.term}</span>
+                            <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:600,color:'var(--text-primary)',whiteSpace:'nowrap'}}>{item.term}</span>
                             <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)',padding:'1px 6px',background:'var(--bg-card)',borderRadius:4}}>{item.en}</span>
                             <span style={{marginLeft:'auto',fontSize:12,color:'var(--text-muted)',opacity:0.4}}>→</span>
                           </div>
@@ -500,7 +500,7 @@ function Stage2() {
         </div>
         <motion.div style={{padding:'14px 20px',background:'rgba(79,195,247,0.06)',borderRadius:8,border:'1px solid rgba(79,195,247,0.2)',display:'flex',alignItems:'center',gap:16,fontFamily:'var(--font-mono)',fontSize:13}}
           initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.5}}>
-          <div><span style={{color:'var(--text-muted)'}}>字符数：</span><span style={{color:'var(--text-primary)'}}>{input.length}</span></div>
+          <div><span style={{color:'var(--text-muted)'}}>字符数：</span><span style={{color:'var(--text-primary)',whiteSpace:'nowrap'}}>{input.length}</span></div>
           <div style={{width:1,height:20,background:'var(--border-subtle)'}}/>
           <div><span style={{color:'var(--text-muted)'}}>Token 数：</span><span style={{color:'var(--accent-secondary)',fontWeight:600}}>{tokens.length}</span></div>
           <div style={{width:1,height:20,background:'var(--border-subtle)'}}/>
@@ -851,7 +851,7 @@ function ChatBubble({role,text,delay}) {
   return (
     <motion.div style={{display:'flex',justifyContent:isUser?'flex-end':'flex-start'}}
       initial={{opacity:0,x:isUser?20:-20}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.4,delay}}>
-      <div style={{maxWidth:'70%',padding:'10px 16px',borderRadius:isUser?'12px 12px 4px 12px':'12px 12px 12px 4px',background:isUser?'rgba(79,195,247,0.12)':'rgba(100,255,218,0.08)',border:`1px solid ${isUser?'rgba(79,195,247,0.25)':'rgba(100,255,218,0.2)'}`,fontSize:14,fontFamily:'var(--font-sans)',color:'var(--text-primary)'}}>
+      <div style={{maxWidth:'70%',padding:'10px 16px',borderRadius:isUser?'12px 12px 4px 12px':'12px 12px 12px 4px',background:isUser?'rgba(79,195,247,0.12)':'rgba(100,255,218,0.08)',border:`1px solid ${isUser?'rgba(79,195,247,0.25)':'rgba(100,255,218,0.2)'}`,fontSize:14,fontFamily:'var(--font-sans)',color:'var(--text-primary)',whiteSpace:'nowrap'}}>
         <span style={{fontSize:10,display:'block',marginBottom:2,color:isUser?'var(--accent-secondary)':'var(--accent-primary)',fontFamily:'var(--font-mono)'}}>{isUser?'用户':'LLM'}</span>{text}
       </div>
     </motion.div>
@@ -1699,7 +1699,7 @@ function StageTips() {
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:2}}>
                     <span style={{fontSize:10,fontFamily:'var(--font-mono)',color:'var(--accent-secondary)',padding:'1px 6px',background:'rgba(79,195,247,0.08)',borderRadius:4}}>{link.label}</span>
-                    <span style={{fontSize:13,fontWeight:600,color:'var(--text-primary)'}}>{link.name}</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'var(--text-primary)',whiteSpace:'nowrap'}}>{link.name}</span>
                   </div>
                   <div style={{fontSize:11,color:'var(--text-muted)'}}>{link.desc}</div>
                 </div>
