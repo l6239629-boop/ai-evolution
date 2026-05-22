@@ -916,77 +916,179 @@ function Stage5() {
   );
 }
 
-/* ========== STAGE 6: FUNCTION CALLING + MCP ========== */
+/* ========== STAGE 6: AGENT + FUNCTION CALLING + MCP ========== */
 function NodeBox6({label,content,color,active,highlight,large}) {
   return (
-    <motion.div style={{padding:large?'20px 24px':'14px 22px',background:active?'var(--bg-elevated)':'var(--bg-deep)',border:`2px solid ${highlight?color:active?'var(--border-active)':'var(--border-subtle)'}`,borderRadius:12,textAlign:'center',minWidth:200,opacity:active?1:0.25,transition:'all 0.5s ease',boxShadow:highlight?`0 0 24px ${color}33`:'none'}}
+    <motion.div style={{padding:large?'20px 24px':'14px 22px',background:active?'var(--bg-elevated)':'var(--bg-deep)',border:`2px solid ${highlight?color:active?'var(--border-active)':'var(--border-subtle)'}`,borderRadius:12,textAlign:'center',minWidth:240,opacity:active?1:0.25,transition:'all 0.5s ease',boxShadow:highlight?`0 0 24px ${color}33`:'none'}}
       animate={highlight?{scale:[1,1.03,1]}:{}} transition={{duration:1.5,repeat:highlight?Infinity:0}}>
       <div style={{fontFamily:'var(--font-mono)',fontSize:10,color,letterSpacing:1,marginBottom:6,textTransform:'uppercase'}}>{label}</div>
       <div style={{fontFamily:'var(--font-sans)',fontSize:13,color:'var(--text-primary)',fontWeight:500,lineHeight:1.5}}>{content}</div>
     </motion.div>
   );
 }
-function Connector6({active,label,direction,compact}) {
-  const h=compact?16:32;
-  const isHorizontal=direction==='right';
+function Connector6({active,label}) {
   return (
-    <div style={{display:'flex',flexDirection:isHorizontal?'row':'column',alignItems:'center',height:isHorizontal?'auto':h,width:isHorizontal?60:'auto',opacity:active?1:0.15,transition:'opacity 0.5s'}}>
-      <div style={{width:isHorizontal?h:2,height:isHorizontal?2:h,background:active?'linear-gradient(to bottom,var(--accent-primary),var(--accent-gold))':'var(--text-muted)'}}/>
-      {label&&<span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)',padding:'4px 8px',whiteSpace:'nowrap'}}>{label}</span>}
+    <div style={{display:'flex',flexDirection:'column',alignItems:'center',opacity:active?1:0.15,transition:'opacity 0.5s'}}>
+      <div style={{width:2,height:28,background:active?'linear-gradient(to bottom,var(--accent-primary),var(--accent-gold))':'var(--text-muted)'}}/>
+      <div style={{width:0,height:0,borderLeft:'6px solid transparent',borderRight:'6px solid transparent',borderTop:`8px solid ${active?'var(--accent-gold)':'var(--text-muted)'}`}}/>
+      {label&&<span style={{fontFamily:'var(--font-mono)',fontSize:10,color:active?'var(--accent-gold)':'var(--text-muted)',padding:'3px 8px',whiteSpace:'nowrap',marginTop:2}}>{label}</span>}
     </div>
   );
 }
 
 function Stage6() {
   const [step,setStep]=useState(-1);
-  const steps=[{label:'用户提问',desc:'用户发出请求："5月20日天气怎么样？"'},{label:'LLM 识别意图',desc:'LLM 判断：这需要查天气，但我没有实时数据 → 发出 Function Call'},{label:'Agent 调度工具',desc:'Agent 接收 function call 请求，通过 MCP 协议调度 Weather API'},{label:'工具返回数据',desc:'Weather API 返回结构化天气数据'},{label:'LLM 组织语言',desc:'LLM 收到天气数据，将其转化为自然语言回答'},{label:'返回用户',desc:'用户收到准确答案："5月20日：晴天，22°C"'}];
+  const [showDetail,setShowDetail]=useState(false);
+  const steps=[
+    {label:'用户 → Agent',desc:'用户发出请求，Agent 作为系统入口接收'},
+    {label:'LLM 理解推理',desc:'Agent 将请求交给 LLM 进行语义理解，判断需要查天气'},
+    {label:'Function Calling',desc:'LLM 生成结构化 function call 请求'},
+    {label:'Agent Runtime 调度',desc:'Agent Runtime 接收 function call，调度工具'},
+    {label:'MCP → Tool',desc:'通过 MCP 标准协议调用 Weather API，返回结构化数据'},
+    {label:'LLM 组织语言',desc:'LLM 收到天气数据，转化为自然语言'},
+    {label:'输出结果',desc:'用户收到准确答案'}
+  ];
   const advance=()=>setStep(s=>Math.min(s+1,steps.length-1));
   return (
     <SectionWrapper id="stage-6">
       <div style={{marginBottom:32}}>
         <StageBadge num={6}/>
-        <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>Function Calling + 工具协议</h2>
+        <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>Agent + Function Calling + MCP</h2>
         <p style={{fontSize:18,color:'var(--accent-gold)',fontWeight:500,marginBottom:8}}>难度 ⭐⭐⭐⭐</p>
-        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:660}}>突破 LLM 知识边界的关键方案：让模型可以调用外部工具。<strong style={{color:'var(--accent-primary)'}}>Function Calling</strong> 是 LLM 与工具之间的标准接口协议，<strong style={{color:'var(--accent-secondary)'}}>MCP</strong>（Model Context Protocol）等工具通信协议让 Agent 能够标准化地调度各种外部 API。此外还有 <strong style={{color:'var(--accent-gold)'}}>RAG</strong>（检索增强生成）和网络搜索等手段补充实时知识。</p>
+        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:680}}>突破 LLM 知识边界的关键方案。<strong style={{color:'var(--accent-primary)'}}>Agent 是系统入口层</strong>，LLM 是其内部的推理引擎。<strong style={{color:'var(--accent-secondary)'}}>Function Calling</strong> 是 LLM 与 Agent Runtime 之间的调用格式，<strong style={{color:'var(--accent-gold)'}}>MCP</strong> 是整个外部能力系统的标准通信协议——不仅 Tool，还覆盖 Memory、IDE、Database、Skill、Browser。</p>
       </div>
       <motion.div style={{background:'var(--bg-card)',borderRadius:16,border:'1px solid var(--border-subtle)',padding:32}}
         initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}>
-        <div style={{display:'flex',justifyContent:'center',marginBottom:24}}>
+        <div style={{display:'flex',justifyContent:'center',marginBottom:20}}>
           <button onClick={advance} disabled={step>=steps.length-1}
             style={{padding:'10px 28px',fontSize:14,fontFamily:'var(--font-sans)',fontWeight:600,background:step>=steps.length-1?'var(--bg-deep)':'var(--accent-primary)',border:'none',borderRadius:8,color:step>=steps.length-1?'var(--text-muted)':'var(--bg-deep)',cursor:step>=steps.length-1?'default':'pointer'}}>
             {step<0?'点击开始演示 →':step>=steps.length-1?'演示完成':'下一步 →'}</button>
           {step>=0&&<button onClick={()=>setStep(-1)} style={{marginLeft:10,padding:'10px 16px',fontSize:13,fontFamily:'var(--font-sans)',background:'transparent',border:'1px solid var(--border-subtle)',borderRadius:8,color:'var(--text-secondary)',cursor:'pointer'}}>重置</button>}
         </div>
-        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0,position:'relative'}}>
-          <NodeBox6 label="用户" content="「5月20日天气怎么样？」" color="var(--accent-gold)" active={step>=0} highlight={step===0}/>
-          <Connector6 active={step>=1} label="Prompt"/>
-          <NodeBox6 label="LLM 核心推理" content="识别意图 → 发出 Function Call" color="var(--accent-primary)" active={step>=1} highlight={step===1}/>
-          <Connector6 active={step>=2} label="Function Calling（标准接口协议）"/>
-          <div style={{display:'flex',gap:40,alignItems:'flex-start'}}>
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-              <Connector6 active={step>=2} compact/>
-              <NodeBox6 label="基础 Agent" content="工具调度 / 中间代理层" color="var(--accent-secondary)" active={step>=2} highlight={step===2}/>
-            </div>
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-              <Connector6 active={step>=3} label="MCP（工具通信协议）" direction="right"/>
-              <NodeBox6 label="Weather API" content="返回结构化天气数据" color="#ff7043" active={step>=3} highlight={step===3}/>
-            </div>
-          </div>
-          <Connector6 active={step>=4} label="结构化结果返回" direction="up"/>
-          <NodeBox6 label="LLM 核心推理" content="将天气数据组织为自然语言" color="var(--accent-primary)" active={step>=4} highlight={step===4}/>
-          <Connector6 active={step>=5} label="最终回答"/>
-          <AnimatePresence>{step>=5&&<motion.div initial={{opacity:0,y:15}} animate={{opacity:1,y:0}} transition={{duration:0.5}}>
-            <NodeBox6 label="输出结果" content="「5月20日：晴天，22°C」" color="var(--accent-gold)" active={true} highlight={true}/></motion.div>}</AnimatePresence>
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0}}>
+          {/* Step 0: 用户始终可见 */}
+          <NodeBox6 label="用户" content="「5月20日天气怎么样？」" color="var(--accent-gold)" active={true} highlight={step===0}/>
+          {/* Step 1: Agent 系统入口 */}
+          <AnimatePresence>{step>=1 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true}/>
+            <NodeBox6 label="Agent 系统入口" content="接收请求，作为系统入口层" color="var(--accent-secondary)" active={true} highlight={step===1}/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 2: LLM */}
+          <AnimatePresence>{step>=2 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true} label="Function Calling"/>
+            <NodeBox6 label="LLM 推理引擎" content="理解意图 → 判断需要查天气 → 生成 function call" color="var(--accent-primary)" active={true} highlight={step===2} large/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 3: Agent Runtime */}
+          <AnimatePresence>{step>=3 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true}/>
+            <NodeBox6 label="Agent Runtime" content="工具调度 / Workflow 编排" color="var(--accent-secondary)" active={true} highlight={step===3}/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 4: Tool */}
+          <AnimatePresence>{step>=4 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true} label="MCP 标准协议"/>
+            <NodeBox6 label="Tool · Weather API" content="返回结构化天气数据" color="#ff7043" active={true} highlight={step===4}/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 5: LLM 组织语言 */}
+          <AnimatePresence>{step>=5 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true}/>
+            <NodeBox6 label="LLM 推理引擎" content="收到数据 → 组织为自然语言" color="var(--accent-primary)" active={true} highlight={step===5} large/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 6: 输出 */}
+          <AnimatePresence>{step>=6 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true}/>
+            <NodeBox6 label="输出结果" content="「5月20日：晴天，22°C」" color="var(--accent-gold)" active={true} highlight={true}/>
+          </motion.div>}</AnimatePresence>
         </div>
         <AnimatePresence mode="wait">{step>=0&&<motion.div key={step} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
           style={{marginTop:24,padding:'12px 20px',background:'rgba(100,255,218,0.05)',borderRadius:8,border:'1px solid var(--border-subtle)',textAlign:'center'}}>
           <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',marginRight:8}}>步骤 {step+1}/{steps.length}</span>
           <span style={{fontSize:14,color:'var(--text-secondary)'}}>{steps[step]?.desc}</span></motion.div>}</AnimatePresence>
-        <motion.div style={{marginTop:24,padding:'16px 20px',background:'rgba(255,183,77,0.04)',borderRadius:10,border:'1px solid rgba(255,183,77,0.15)',display:'flex',gap:20,flexWrap:'wrap'}}
+        <motion.div style={{marginTop:28,padding:'16px 20px',background:'rgba(255,183,77,0.04)',borderRadius:10,border:'1px solid rgba(255,183,77,0.15)',display:'flex',gap:20,flexWrap:'wrap'}}
           initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:1}}>
+          <div><span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-gold)',fontWeight:600,marginRight:6}}>MCP</span><span style={{fontSize:12,color:'var(--text-muted)'}}>标准通信协议：覆盖 Tool · Memory · IDE · Database · Skill · Browser</span></div>
           <div><span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-gold)',fontWeight:600,marginRight:6}}>RAG</span><span style={{fontSize:12,color:'var(--text-muted)'}}>检索增强生成：从知识库检索相关资料再回答</span></div>
           <div><span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-gold)',fontWeight:600,marginRight:6}}>Web Search</span><span style={{fontSize:12,color:'var(--text-muted)'}}>网络搜索：实时抓取互联网信息补充知识</span></div>
-          <div><span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-gold)',fontWeight:600,marginRight:6}}>MCP</span><span style={{fontSize:12,color:'var(--text-muted)'}}>Model Context Protocol：标准化的工具通信协议</span></div>
+        </motion.div>
+        <motion.div style={{marginTop:20,padding:'14px 20px',background:'rgba(100,255,218,0.03)',borderRadius:8,border:'1px solid rgba(100,255,218,0.12)',textAlign:'center'}}
+          initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:1.2}}>
+          <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.8}}>
+            <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)',marginRight:8}}>旧时代 ChatBot：</span>
+            用户 ↔ LLM
+            <span style={{margin:'0 12px',color:'var(--border-active)'}}>|</span>
+            <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--accent-gold)',marginRight:8}}>新时代 Agent：</span>
+            用户 ↔ <strong style={{color:'var(--accent-primary)'}}>Agent System</strong>（↳ LLM · Tools · Memory · Workflow · Skills）
+          </p>
+        </motion.div>
+        {/* RAG & Web Search 深入理解 */}
+        <motion.div style={{marginTop:20}} initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:1.3}}>
+          <button onClick={()=>setShowDetail(!showDetail)}
+            style={{display:'block',width:'100%',padding:'12px 20px',fontSize:13,fontFamily:'var(--font-sans)',fontWeight:600,background:'rgba(255,183,77,0.04)',border:'1px solid rgba(255,183,77,0.15)',borderRadius:10,color:'var(--accent-gold)',cursor:'pointer',textAlign:'center'}}>
+            {showDetail?'收起 ↑':'展开 ↓'}  深入理解：RAG 与 Web Search
+          </button>
+          <AnimatePresence>
+            {showDetail && (
+              <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:'auto'}} exit={{opacity:0,height:0}} transition={{duration:0.4}} style={{overflow:'hidden'}}>
+                <div style={{display:'flex',flexDirection:'column',gap:16,marginTop:16}}>
+                  {/* RAG 卡片 */}
+                  <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{delay:0.15}} style={{padding:'18px 20px',background:'rgba(79,195,247,0.04)',border:'1px solid rgba(79,195,247,0.2)',borderRadius:12}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
+                      <span style={{fontSize:18}}>📚</span>
+                      <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:'var(--accent-secondary)'}}>RAG 检索增强生成</span>
+                    </div>
+                    <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.8,marginBottom:10}}>给 LLM 配一个「资料库」——回答前先去库里翻相关资料，拿着资料再回答，回答有据可查。</p>
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,flexWrap:'wrap',padding:'10px 14px',background:'rgba(79,195,247,0.04)',borderRadius:8,marginBottom:10,fontSize:11}}>
+                      <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-secondary)'}}>用户提问</span>
+                      <span style={{color:'var(--text-muted)'}}>→</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'#4fc3f7',background:'rgba(79,195,247,0.1)',padding:'2px 8px',borderRadius:4}}>向量检索</span>
+                      <span style={{color:'var(--text-muted)'}}>→</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-secondary)'}}>匹配文档</span>
+                      <span style={{color:'var(--text-muted)'}}>→</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-secondary)'}}>注入 Prompt</span>
+                      <span style={{color:'var(--text-muted)'}}>→</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-gold)'}}>LLM 回答</span>
+                    </div>
+                    <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+                      <span style={{fontSize:10,color:'#4fc3f7',background:'rgba(79,195,247,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 减少幻觉</span>
+                      <span style={{fontSize:10,color:'#4fc3f7',background:'rgba(79,195,247,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 无需重训模型</span>
+                      <span style={{fontSize:10,color:'#4fc3f7',background:'rgba(79,195,247,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 私有知识库</span>
+                    </div>
+                  </motion.div>
+                  {/* Web Search 卡片 */}
+                  <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{delay:0.25}} style={{padding:'18px 20px',background:'rgba(255,183,77,0.04)',border:'1px solid rgba(255,183,77,0.2)',borderRadius:12}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
+                      <span style={{fontSize:18}}>🌐</span>
+                      <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:'var(--accent-gold)'}}>Web Search 网络搜索</span>
+                    </div>
+                    <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.8,marginBottom:10}}>让 LLM 实时上网搜索最新信息——生成搜索关键词，调用搜索引擎 API，综合搜索结果后回答。</p>
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,flexWrap:'wrap',padding:'10px 14px',background:'rgba(255,183,77,0.04)',borderRadius:8,marginBottom:10,fontSize:11}}>
+                      <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-gold)'}}>用户提问</span>
+                      <span style={{color:'var(--text-muted)'}}>→</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'#ffb74d',background:'rgba(255,183,77,0.1)',padding:'2px 8px',borderRadius:4}}>生成搜索词</span>
+                      <span style={{color:'var(--text-muted)'}}>→</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-gold)'}}>搜索引擎 API</span>
+                      <span style={{color:'var(--text-muted)'}}>→</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-gold)'}}>综合结果</span>
+                      <span style={{color:'var(--text-muted)'}}>→</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-gold)'}}>LLM 回答</span>
+                    </div>
+                    <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+                      <span style={{fontSize:10,color:'#ffb74d',background:'rgba(255,183,77,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 实时信息</span>
+                      <span style={{fontSize:10,color:'#ffb74d',background:'rgba(255,183,77,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 开放网络</span>
+                      <span style={{fontSize:10,color:'#ffb74d',background:'rgba(255,183,77,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 覆盖时效场景</span>
+                    </div>
+                  </motion.div>
+                  {/* 对比 */}
+                  <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.35}} style={{padding:'12px 16px',background:'rgba(100,255,218,0.03)',borderRadius:8,border:'1px solid rgba(100,255,218,0.1)',textAlign:'center'}}>
+                    <span style={{fontSize:11,color:'var(--text-muted)'}}>
+                      RAG：<strong style={{color:'var(--accent-secondary)'}}>可控但有限</strong>（预设知识库）
+                      <span style={{margin:'0 12px',color:'var(--border-subtle)'}}>|</span>
+                      Web Search：<strong style={{color:'var(--accent-gold)'}}>开放但不可控</strong>（整个互联网）
+                    </span>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </motion.div>
     </SectionWrapper>
@@ -994,57 +1096,115 @@ function Stage6() {
 }
 
 /* ========== STAGE 7: AGENT + WORKFLOW ========== */
-function MiniNode7({label,color}) {
-  return <div style={{padding:'8px 16px',background:'var(--bg-elevated)',border:`1px solid ${color}44`,borderRadius:8,fontFamily:'var(--font-mono)',fontSize:11,color}}>{label}</div>;
+function WfStep({id,label,tool,color,active,highlight}) {
+  return (
+    <motion.div style={{padding:'10px 18px',background:active?'var(--bg-elevated)':'var(--bg-deep)',border:`2px solid ${highlight?color:active?'var(--border-active)':'var(--border-subtle)'}`,borderRadius:10,textAlign:'center',minWidth:180,opacity:active?1:0.3,transition:'all 0.4s ease',boxShadow:highlight?`0 0 16px ${color}33`:'none'}}
+      animate={highlight?{scale:[1,1.03,1]}:{}} transition={{duration:1.2,repeat:highlight?2:0}}>
+      <div style={{fontFamily:'var(--font-mono)',fontSize:10,color,letterSpacing:1,marginBottom:4}}>Step {id}</div>
+      <div style={{fontFamily:'var(--font-sans)',fontSize:13,fontWeight:600,color:'var(--text-primary)',marginBottom:3}}>{label}</div>
+      <div style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)'}}>{tool}</div>
+    </motion.div>
+  );
 }
 
 function Stage7() {
-  const [activeStep,setActiveStep]=useState(-1);
-  const workflowSteps=[{id:'A',label:'获取天气数据',tool:'Weather Tool (MCP)',color:'var(--accent-primary)'},{id:'B',label:'结构化处理',tool:'LLM / Parser',color:'var(--accent-secondary)'},{id:'C',label:'表格生成',tool:'Formatter Tool 或 LLM',color:'var(--accent-gold)'}];
-  const runAll=()=>{setActiveStep(-1);workflowSteps.forEach((_,i)=>{setTimeout(()=>setActiveStep(i),(i+1)*600);});};
+  const [step,setStep]=useState(-1);
+  const steps=[
+    {label:'总 Agent 入口',desc:'用户请求进入总 Agent，作为系统入口层'},
+    {label:'LLM 任务理解',desc:'LLM 判断：需要查天气 → 结构化 → 表格输出'},
+    {label:'Function Calling → 子 Agent',desc:'LLM 生成 function call，调度 Weather Workflow 子 Agent'},
+    {label:'Workflow 执行',desc:'子 Agent 按固定顺序执行 A→B→C，每步通过 MCP 调用对应工具'},
+    {label:'返回 + LLM 话术',desc:'标准化结果返回总 Agent，LLM 生成最终自然语言'},
+    {label:'输出结果',desc:'用户收到格式化的天气表格'}
+  ];
+  const [wfStep,setWfStep]=useState(-1);
+  const advance=()=>{
+    if(step<3) setStep(s=>s+1);
+    else if(step===3){
+      if(wfStep<2) setWfStep(s=>s+1);
+      else setStep(4);
+    } else setStep(s=>Math.min(s+1,steps.length-1));
+  };
+  const reset=()=>{setStep(-1);setWfStep(-1);};
+  const wf=[{id:'A',label:'获取天气数据',tool:'Weather Tool',color:'var(--accent-primary)'},{id:'B',label:'结构化处理',tool:'LLM / Parser',color:'var(--accent-secondary)'},{id:'C',label:'表格生成',tool:'Formatter Tool',color:'var(--accent-gold)'}];
   return (
     <SectionWrapper id="stage-7">
       <div style={{marginBottom:32}}>
         <StageBadge num={7}/>
         <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>Agent + Workflow 编排</h2>
         <p style={{fontSize:18,color:'var(--accent-gold)',fontWeight:500,marginBottom:8}}>难度 ⭐⭐⭐⭐⭐</p>
-        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:660}}>单次工具调用不够稳定，复杂任务需要多个步骤协同。我们在基础 Agent 中嵌入子 Agent，并预设好工作顺序（Workflow），让每一步都有明确的输入和输出，解决每次随机调用工具的问题。</p>
+        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:680}}>单次工具调用不够稳定，复杂任务需要多步骤协同。<strong style={{color:'var(--accent-primary)'}}>总 Agent 是系统入口</strong>，LLM 理解任务后通过 <strong style={{color:'var(--accent-secondary)'}}>Function Calling</strong> 调度子 Agent，子 Agent 内部执行预设好的串行 Workflow（<strong style={{color:'var(--accent-gold)'}}>A→B→C</strong>），每一步都有明确的输入输出，避免随机调用。</p>
       </div>
       <motion.div style={{background:'var(--bg-card)',borderRadius:16,border:'1px solid var(--border-subtle)',padding:32}}
         initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}>
         <p style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--text-muted)',marginBottom:16,textAlign:'center'}}>任务：查未来 3 天天气，并以表格形式呈现</p>
-        <div style={{display:'flex',justifyContent:'center',alignItems:'center',gap:16,marginBottom:24,flexWrap:'wrap'}}>
-          <MiniNode7 label="用户" color="var(--accent-gold)"/>
-          <span style={{color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>→</span>
-          <MiniNode7 label="Agent 系统层" color="var(--accent-primary)"/>
-          <span style={{color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>→</span>
-          <MiniNode7 label="LLM 推理" color="var(--accent-secondary)"/>
+        <div style={{display:'flex',justifyContent:'center',gap:10,marginBottom:20}}>
+          <button onClick={advance} disabled={step>=steps.length-1}
+            style={{padding:'10px 28px',fontSize:14,fontFamily:'var(--font-sans)',fontWeight:600,background:step>=steps.length-1?'var(--bg-deep)':'var(--accent-primary)',border:'none',borderRadius:8,color:step>=steps.length-1?'var(--text-muted)':'var(--bg-deep)',cursor:step>=steps.length-1?'default':'pointer'}}>
+            {step<0?'点击开始演示 →':step>=steps.length-1?'演示完成':'下一步 →'}</button>
+          {step>=0&&<button onClick={reset} style={{padding:'10px 16px',fontSize:13,fontFamily:'var(--font-sans)',background:'transparent',border:'1px solid var(--border-subtle)',borderRadius:8,color:'var(--text-secondary)',cursor:'pointer'}}>重置</button>}
         </div>
-        <motion.div style={{border:'2px solid rgba(100,255,218,0.2)',borderRadius:14,padding:'20px 24px 24px',background:'rgba(100,255,218,0.03)',position:'relative'}}>
-          <div style={{position:'absolute',top:-10,left:20,background:'var(--bg-card)',padding:'2px 14px',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',borderRadius:4}}>子 Agent：Weather Agent（固定 Workflow）</div>
-          <div style={{display:'flex',alignItems:'flex-start',justifyContent:'center',gap:20,marginTop:12,flexWrap:'wrap'}}>
-            {workflowSteps.map((ws,i)=>(<div key={ws.id} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-              <motion.div style={{width:160,padding:'16px 14px',background:activeStep>=i?'var(--bg-elevated)':'var(--bg-deep)',border:`2px solid ${activeStep===i?ws.color:activeStep>i?'var(--border-active)':'var(--border-subtle)'}`,borderRadius:10,textAlign:'center',opacity:activeStep>=i||activeStep===-1?1:0.4,transition:'all 0.4s ease',boxShadow:activeStep===i?`0 0 16px ${ws.color}33`:'none'}}
-                animate={activeStep===i?{scale:[1,1.04,1]}:{}} transition={{duration:0.8,repeat:activeStep===i?2:0}}>
-                <div style={{fontFamily:'var(--font-mono)',fontSize:10,color:ws.color,marginBottom:4,letterSpacing:1}}>Step {ws.id}</div>
-                <div style={{fontFamily:'var(--font-sans)',fontSize:13,fontWeight:600,color:'var(--text-primary)',marginBottom:4}}>{ws.label}</div>
-                <div style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)'}}>{ws.tool}</div>
-              </motion.div>
-              {i<workflowSteps.length-1&&<div style={{display:'flex',flexDirection:'column',alignItems:'center',margin:'8px 0'}}><div style={{width:2,height:20,background:activeStep>i?'var(--accent-primary)':'var(--text-muted)',opacity:activeStep>i?1:0.2}}/></div>}
-            </div>))}
-          </div>
-        </motion.div>
-        <AnimatePresence>{activeStep>=2&&<motion.div initial={{opacity:0,y:15}} animate={{opacity:1,y:0}} transition={{duration:0.5}}
-          style={{marginTop:24,textAlign:'center',padding:'16px 24px',background:'rgba(100,255,218,0.06)',borderRadius:10,border:'1px solid var(--border-active)'}}>
-          <p style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',marginBottom:8}}>标准化结果输出</p>
-          <div style={{display:'inline-block',fontFamily:'var(--font-mono)',fontSize:13,color:'var(--text-primary)',border:'1px solid var(--border-subtle)',borderRadius:8,overflow:'hidden'}}>
-            <div style={{display:'flex'}}>{['日期','天气','温度'].map(h=><div key={h} style={{padding:'6px 14px',background:'rgba(100,255,218,0.08)',fontSize:12,fontWeight:600,color:'var(--accent-primary)',borderRight:'1px solid var(--border-subtle)'}}>{h}</div>)}</div>
-            {[['5/21','☀️ 晴','24°C'],['5/22','⛅ 阴','20°C'],['5/23','🌧️ 小雨','18°C']].map((row,i)=>(<div key={i} style={{display:'flex',borderTop:'1px solid var(--border-subtle)'}}>{row.map((cell,j)=>(<div key={j} style={{padding:'6px 14px',fontSize:12,color:'var(--text-secondary)',borderRight:j<2?'1px solid var(--border-subtle)':'none'}}>{cell}</div>))}</div>))}
-          </div>
-        </motion.div>}</AnimatePresence>
-        <div style={{display:'flex',justifyContent:'center',marginTop:24}}>
-          <button onClick={runAll} style={{padding:'10px 28px',fontSize:14,fontFamily:'var(--font-sans)',fontWeight:600,background:'var(--accent-primary)',border:'none',borderRadius:8,color:'var(--bg-deep)',cursor:'pointer'}}>演示工作流编排</button>
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0}}>
+          {/* Step 0: 用户 */}
+          <WfStep id="0" label="用户" tool="「查未来3天天气，表格呈现」" color="var(--accent-gold)" active={true} highlight={step===0}/>
+          {/* Step 1: 总 Agent */}
+          <AnimatePresence>{step>=1 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true}/>
+            <WfStep id="1" label="总 Agent" tool="系统入口 · 接收请求" color="var(--accent-primary)" active={true} highlight={step===1}/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 2: LLM 任务理解 */}
+          <AnimatePresence>{step>=2 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true} label="Function Calling"/>
+            <WfStep id="2" label="LLM 任务理解" tool="判断：查天气 → 结构化 → 表格" color="var(--accent-secondary)" active={true} highlight={step===2}/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 3: 子 Agent Workflow */}
+          <AnimatePresence>{step>=3 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100%'}}>
+            <Connector6 active={true}/>
+            <motion.div style={{border:'2px solid rgba(100,255,218,0.2)',borderRadius:14,padding:'16px 20px 20px',background:'rgba(100,255,218,0.03)',position:'relative',width:'100%',maxWidth:380}}>
+              <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',marginBottom:12,textAlign:'center',fontWeight:600}}>子 Agent：Weather Workflow（A→B→C）</div>
+              <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0}}>
+                {/* Step A */}
+                <WfStep id="A" label={wf[0].label} tool={wf[0].tool} color={wf[0].color} active={true} highlight={wfStep===0}/>
+                <AnimatePresence>{wfStep>=0 && <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{duration:0.3}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',opacity:1,margin:'4px 0'}}>
+                    <div style={{width:2,height:14,background:'var(--accent-primary)'}}/>
+                    <div style={{width:0,height:0,borderLeft:'5px solid transparent',borderRight:'5px solid transparent',borderTop:'6px solid var(--accent-gold)'}}/>
+                  </div>
+                  <span style={{fontFamily:'var(--font-mono)',fontSize:9,color:'var(--accent-gold)',marginBottom:4}}>MCP</span>
+                </motion.div>}</AnimatePresence>
+                {/* Step B */}
+                <AnimatePresence>{wfStep>=1 && <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                  <WfStep id="B" label={wf[1].label} tool={wf[1].tool} color={wf[1].color} active={true} highlight={wfStep===1}/>
+                  <div style={{display:'flex',flexDirection:'column',alignItems:'center',opacity:1,margin:'4px 0'}}>
+                    <div style={{width:2,height:14,background:'var(--accent-primary)'}}/>
+                    <div style={{width:0,height:0,borderLeft:'5px solid transparent',borderRight:'5px solid transparent',borderTop:'6px solid var(--accent-gold)'}}/>
+                  </div>
+                </motion.div>}</AnimatePresence>
+                {/* Step C */}
+                <AnimatePresence>{wfStep>=2 && <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                  <WfStep id="C" label={wf[2].label} tool={wf[2].tool} color={wf[2].color} active={true} highlight={wfStep===2}/>
+                </motion.div>}</AnimatePresence>
+              </div>
+            </motion.div>
+          </motion.div>}</AnimatePresence>
+          {/* Step 4: 返回 + LLM 话术 */}
+          <AnimatePresence>{step>=4 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true}/>
+            <WfStep id="4" label="LLM 最终话术生成" tool="返回总 Agent · 组织自然语言" color="var(--accent-secondary)" active={true} highlight={step===4}/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 5: 输出 */}
+          <AnimatePresence>{step>=5 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true}/>
+            <div style={{display:'inline-block',fontFamily:'var(--font-mono)',fontSize:13,color:'var(--text-primary)',border:'1px solid var(--border-active)',borderRadius:8,overflow:'hidden',boxShadow:'0 0 20px rgba(100,255,218,0.08)'}}>
+              <div style={{display:'flex'}}>{['日期','天气','温度'].map(h=><div key={h} style={{padding:'8px 18px',background:'rgba(100,255,218,0.08)',fontSize:12,fontWeight:600,color:'var(--accent-primary)',borderRight:'1px solid var(--border-subtle)'}}>{h}</div>)}</div>
+              {[['5/21','☀️ 晴','24°C'],['5/22','⛅ 阴','20°C'],['5/23','🌧️ 小雨','18°C']].map((row,i)=>(<div key={i} style={{display:'flex',borderTop:'1px solid var(--border-subtle)'}}>{row.map((cell,j)=>(<div key={j} style={{padding:'6px 18px',fontSize:12,color:'var(--text-secondary)',borderRight:j<2?'1px solid var(--border-subtle)':'none'}}>{cell}</div>))}</div>))}
+            </div>
+          </motion.div>}</AnimatePresence>
         </div>
+        <AnimatePresence mode="wait">{step>=0&&<motion.div key={step} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
+          style={{marginTop:24,padding:'12px 20px',background:'rgba(100,255,218,0.05)',borderRadius:8,border:'1px solid var(--border-subtle)',textAlign:'center'}}>
+          <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',marginRight:8}}>步骤 {step>=3&&wfStep>=0?`${step+1}.${wfStep+1}`:step+1}/{steps.length}</span>
+          <span style={{fontSize:14,color:'var(--text-secondary)'}}>{step===3&&wfStep>=0?wf[wfStep].label+' — '+wf[wfStep].tool:steps[step]?.desc}</span></motion.div>}</AnimatePresence>
       </motion.div>
     </SectionWrapper>
   );
@@ -1097,19 +1257,111 @@ function ChartView8({data}) {
 }
 
 function Stage8() {
+  const [step,setStep]=useState(-1);
   const [mode,setMode]=useState('table');
+  const steps=[
+    {label:'LLM 判断需求',desc:'Workflow 数据就绪，LLM 判断需要美观展示'},
+    {label:'Function Calling',desc:'LLM 生成 skill call 请求，调度展示 Skill'},
+    {label:'Agent Runtime 调度',desc:'接收 skill call，匹配最合适的 Skill'},
+    {label:'Skill System 执行',desc:'通过 MCP 协议调用 Weather Beautifier Skill'},
+    {label:'Skill 注入上下文',desc:'SKILL.md 文本注入 LLM Prompt，LLM "学会"这个能力'},
+    {label:'多样化输出',desc:'同一份数据 → 多种展示形态'}
+  ];
+  const advance=()=>setStep(s=>Math.min(s+1,steps.length-1));
   return (
     <SectionWrapper id="stage-8">
       <div style={{marginBottom:32}}>
         <StageBadge num={8}/>
         <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>Skill 技能系统</h2>
         <p style={{fontSize:18,color:'var(--accent-gold)',fontWeight:500,marginBottom:8}}>难度 ⭐⭐⭐⭐⭐⭐</p>
-        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:680}}>用户想要的输出形式可能各不相同——表格、卡片、PPT、Word 文档……我们将不同的呈现能力封装为独立的 <strong style={{color:'var(--accent-primary)'}}>Skill（技能）</strong>，AI 在遇到呈现需求时可以自主匹配和运行最合适的 Skill。参考规范：<a href="https://agentskills.io/home" target="_blank" rel="noopener" style={{color:'var(--accent-secondary)',marginLeft:4}}>agentskills.io</a></p>
+        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:680}}>Skill 的本质：<strong style={{color:'#ba68c8'}}>文本化的 Workflow 单元</strong>——每个 Skill 就是一个 SKILL.md 文件，用自然语言写明执行流程。Agent Runtime 匹配到 Skill 后，将文件内容注入 LLM 上下文，LLM 按文本中写的步骤执行。这不同于 Tool（单步函数）和 Workflow（多步编排）。</p>
+        {/* 三层对比卡片 */}
+        <motion.div style={{display:'flex',gap:12,marginTop:24,flexWrap:'wrap',justifyContent:'center'}}
+          initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:0.3}}>
+          {[
+            {icon:'🔧',title:'Tool',sub:'单步 API 调用',desc:'一个函数，一次调用',code:'getWeather("北京")',color:'var(--accent-secondary)'},
+            {icon:'⚙️',title:'Workflow',sub:'多步骤编排',desc:'固定顺序的多步 Pipeline',code:'A → B → C',color:'var(--accent-gold)'},
+            {icon:'📋',title:'Skill',sub:'文本化能力模块',desc:'SKILL.md 文件，LLM 学会执行',code:'# Weather Beautifier\n1. 读取数据\n2. 选择展示模式\n3. 渲染输出',color:'#ba68c8'}
+          ].map((item,i)=>(
+            <motion.div key={i} style={{flex:'1 1 180px',maxWidth:220,background:'var(--bg-deep)',border:`1px solid ${item.color}22`,borderRadius:12,padding:'16px 14px',textAlign:'center'}}
+              whileHover={{borderColor:item.color,boxShadow:`0 0 20px ${item.color}18`,y:-2}}>
+              <div style={{fontSize:24,marginBottom:4}}>{item.icon}</div>
+              <div style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:item.color,marginBottom:2}}>{item.title}</div>
+              <div style={{fontSize:10,color:'var(--text-muted)',marginBottom:8}}>{item.sub}</div>
+              <div style={{fontSize:11,color:'var(--text-secondary)',lineHeight:1.5,marginBottom:8}}>{item.desc}</div>
+              <div style={{fontFamily:'var(--font-mono)',fontSize:9,color:item.color,background:`${item.color}11`,padding:'4px 8px',borderRadius:4,whiteSpace:'pre-line',textAlign:'left',lineHeight:1.5}}>{item.code}</div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
-      <motion.div style={{background:'var(--bg-card)',borderRadius:16,border:'1px solid var(--border-subtle)',padding:32}}
+      {/* Architecture Flow */}
+      <motion.div style={{background:'var(--bg-card)',borderRadius:16,border:'1px solid var(--border-subtle)',padding:32,marginBottom:28}}
         initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}>
-        <p style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--text-muted)',marginBottom:16,textAlign:'center'}}>任务：查未来 3 天天气，并以「美观的形式」呈现</p>
-        <div style={{display:'flex',justifyContent:'center',gap:10,marginBottom:28,flexWrap:'wrap'}}>
+        <p style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--text-muted)',marginBottom:16,textAlign:'center'}}>承接 Workflow Step C — Skill 的完整调用链路</p>
+        <div style={{display:'flex',justifyContent:'center',gap:10,marginBottom:20}}>
+          <button onClick={advance} disabled={step>=steps.length-1}
+            style={{padding:'10px 28px',fontSize:14,fontFamily:'var(--font-sans)',fontWeight:600,background:step>=steps.length-1?'var(--bg-deep)':'var(--accent-primary)',border:'none',borderRadius:8,color:step>=steps.length-1?'var(--text-muted)':'var(--bg-deep)',cursor:step>=steps.length-1?'default':'pointer'}}>
+            {step<0?'点击开始演示 →':step>=steps.length-1?'演示完成':'下一步 →'}</button>
+          {step>=0&&<button onClick={()=>setStep(-1)} style={{marginLeft:10,padding:'10px 16px',fontSize:13,fontFamily:'var(--font-sans)',background:'transparent',border:'1px solid var(--border-subtle)',borderRadius:8,color:'var(--text-secondary)',cursor:'pointer'}}>重置</button>}
+        </div>
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0}}>
+          {/* Step 0: LLM */}
+          <WfStep id="0" label="LLM 推理" tool="数据就绪 · 判断需要美观展示" color="var(--accent-primary)" active={true} highlight={step===0}/>
+          {/* Step 1: Function Calling */}
+          <AnimatePresence>{step>=1 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true} label="Function Calling"/>
+            <WfStep id="1" label="LLM 生成 Skill Call" tool="结构化调用请求 → 调度展示 Skill" color="var(--accent-secondary)" active={true} highlight={step===1}/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 2: Agent Runtime */}
+          <AnimatePresence>{step>=2 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true}/>
+            <WfStep id="2" label="Agent Runtime" tool="接收 skill call · 匹配最合适的 Skill" color="var(--accent-gold)" active={true} highlight={step===2}/>
+          </motion.div>}</AnimatePresence>
+          {/* Step 3: Skill System */}
+          <AnimatePresence>{step>=3 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true} label="MCP 标准协议"/>
+            <motion.div style={{border:'2px solid rgba(186,104,200,0.25)',borderRadius:14,padding:'16px 24px',background:'rgba(186,104,200,0.04)',textAlign:'center',minWidth:200}}>
+              <div style={{fontFamily:'var(--font-mono)',fontSize:10,color:'#ba68c8',letterSpacing:2,marginBottom:6,textTransform:'uppercase'}}>Skill System</div>
+              <div style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:'#ba68c8',marginBottom:4}}>Weather Beautifier</div>
+              <div style={{fontSize:11,color:'var(--text-secondary)',lineHeight:1.6}}>美观卡片 · UI 模板 · 图表渲染 · 展示规则</div>
+            </motion.div>
+          </motion.div>}</AnimatePresence>
+          {/* Step 4: Context Injection */}
+          <AnimatePresence>{step>=4 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true} label="Skill 注入上下文"/>
+            <motion.div style={{border:'1px solid rgba(186,104,200,0.2)',borderRadius:12,padding:'16px 20px',background:'rgba(186,104,200,0.03)',maxWidth:420,width:'100%'}}>
+              <div style={{fontSize:11,color:'#ba68c8',fontFamily:'var(--font-mono)',fontWeight:600,marginBottom:10,textAlign:'center'}}>💡 LLM 收到的完整 Prompt</div>
+              <div style={{display:'flex',flexDirection:'column',gap:6}}>
+                <div style={{padding:'6px 10px',background:'rgba(100,255,218,0.04)',borderRadius:6,borderLeft:'3px solid var(--text-muted)',fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',lineHeight:1.5}}>System Prompt：你是 AI 助手，友好回答…</div>
+                <div style={{padding:'6px 10px',background:'rgba(79,195,247,0.04)',borderRadius:6,borderLeft:'3px solid var(--accent-secondary)',fontSize:10,color:'var(--accent-secondary)',fontFamily:'var(--font-mono)',lineHeight:1.5}}>天气数据：{'{date:"5/21", weather:"晴", temp:24}…'}</div>
+                <div style={{padding:'8px 10px',background:'rgba(186,104,200,0.08)',borderRadius:6,borderLeft:'3px solid #ba68c8',fontSize:10,color:'#ba68c8',fontFamily:'var(--font-mono)',lineHeight:1.6,whiteSpace:'pre-line'}}>{'# Weather Beautifier\n1. 读取天气数据\n2. 根据偏好选择展示模式\n   （表格 / 卡片 / 图表）\n3. 应用 UI 模板渲染\n4. 返回格式化结果'}</div>
+              </div>
+              <p style={{fontSize:10,color:'var(--text-muted)',lineHeight:1.6,marginTop:10,textAlign:'center'}}>Skill 本质：一段<strong style={{color:'#ba68c8'}}>文本化的流程指令</strong>，注入上下文后 LLM 就"学会"了这个能力</p>
+            </motion.div>
+          </motion.div>}</AnimatePresence>
+          {/* Step 5: 输出 */}
+          <AnimatePresence>{step>=5 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <Connector6 active={true}/>
+            <WfStep id="5" label="多样化输出" tool="同一份数据 · 多种展示形态" color="var(--accent-primary)" active={true} highlight={true}/>
+          </motion.div>}</AnimatePresence>
+        </div>
+        <AnimatePresence mode="wait">{step>=0&&<motion.div key={step} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
+          style={{marginTop:24,padding:'12px 20px',background:'rgba(100,255,218,0.05)',borderRadius:8,border:'1px solid var(--border-subtle)',textAlign:'center'}}>
+          <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',marginRight:8}}>步骤 {step+1}/{steps.length}</span>
+          <span style={{fontSize:14,color:'var(--text-secondary)'}}>{steps[step]?.desc}</span></motion.div>}</AnimatePresence>
+        <motion.div style={{marginTop:20,padding:'12px 18px',background:'rgba(100,255,218,0.03)',borderRadius:8,border:'1px solid rgba(100,255,218,0.1)',textAlign:'center'}}
+          initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.8}}>
+          <p style={{fontSize:11,color:'var(--text-muted)',fontFamily:'var(--font-mono)',lineHeight:1.8}}>
+            LLM 生成 skill call → <strong style={{color:'var(--accent-gold)'}}>Agent Runtime 调度</strong> → <strong style={{color:'#ba68c8'}}>Skill System 执行</strong>（通过 MCP 标准协议通信）
+          </p>
+        </motion.div>
+      </motion.div>
+      {/* Interactive Demo */}
+      <motion.div style={{background:'var(--bg-card)',borderRadius:16,border:'1px solid var(--border-subtle)',padding:32}}
+        initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6,delay:0.2}}>
+        <p style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--text-muted)',marginBottom:6,textAlign:'center'}}>交互 Demo：Weather Beautifier 的三种 Skill 输出形态</p>
+        <p style={{fontSize:11,color:'var(--text-muted)',textAlign:'center',marginBottom:20,lineHeight:1.6}}>同一个 Skill，不同展示模式——这只是冰山一角。实际系统中 Skill 还可负责 PPT、Word、数据可视化等完全不同类型的输出。</p>
+        <div style={{display:'flex',justifyContent:'center',gap:10,marginBottom:24,flexWrap:'wrap'}}>
           {Object.keys(skillInfo).map(key=>(<motion.button key={key} onClick={()=>setMode(key)}
             style={{padding:'10px 20px',fontSize:14,fontFamily:'var(--font-sans)',fontWeight:mode===key?600:400,background:mode===key?'rgba(100,255,218,0.1)':'transparent',border:`2px solid ${mode===key?'var(--accent-primary)':'var(--border-subtle)'}`,borderRadius:10,color:mode===key?'var(--accent-primary)':'var(--text-secondary)',cursor:'pointer',display:'flex',alignItems:'center',gap:6}}
             whileHover={{scale:1.04}} whileTap={{scale:0.97}}>
@@ -1125,10 +1377,6 @@ function Stage8() {
             {mode==='chart'&&<ChartView8 key="chart" data={weatherData}/>}
           </AnimatePresence>
         </div>
-        <motion.div style={{marginTop:28,padding:'14px 20px',background:'rgba(100,255,218,0.04)',borderRadius:8,border:'1px solid var(--border-subtle)',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--text-muted)',textAlign:'center'}}
-          initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.5}}>
-          LLM 生成 skill call → apply_skill("weather_{mode}")  |  或通过 MCP / tool schema 调用对应 Skill
-        </motion.div>
       </motion.div>
     </SectionWrapper>
   );
