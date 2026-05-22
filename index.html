@@ -48,7 +48,7 @@ styleSheet.textContent = cssVars;
 document.head.appendChild(styleSheet);
 
 /* ========== HOOKS ========== */
-const STAGE_IDS = ['stage-cover','stage-intro','stage-1','stage-2','stage-3','stage-4','stage-5','stage-6','stage-7','stage-8','stage-agent-types','stage-conclusion'];
+const STAGE_IDS = ['stage-cover','stage-intro','stage-1','stage-2','stage-3','stage-4','stage-5','stage-6','stage-7','stage-8','stage-agent-types','stage-conclusion','stage-tips'];
 
 function useActiveStage() {
   const [activeId, setActiveId] = useState('stage-cover');
@@ -111,7 +111,7 @@ function useGlossaryNavigate(onClose) {
 const LABELS = {
   'stage-cover':'封面','stage-intro':'引言','stage-1':'LM','stage-2':'LLM',
   'stage-3':'对话','stage-4':'记忆','stage-5':'任务','stage-6':'工具',
-  'stage-7':'Agent','stage-8':'Skill','stage-agent-types':'分化','stage-conclusion':'结语'
+  'stage-7':'Agent','stage-8':'Skill','stage-agent-types':'分化','stage-conclusion':'结语','stage-tips':'Tips'
 };
 
 const GLOSSARY = [
@@ -1622,6 +1622,134 @@ function StageConclusion() {
   );
 }
 
+
+/* ========== DATA: TIPS ========== */
+const USAGE_TIPS = [
+  {num:1, title:'先规划，后执行', desc:'当执行复杂任务时，先让模型输出方案，确认后再执行。避免方向性错误，节省来回修正的时间成本。', color:'var(--accent-gold)'},
+  {num:2, title:'用 Workflow 思维写 Prompt', desc:'复杂任务给模型安排清晰的执行路径（类似 workflow），明确每一步做什么、产出什么，输出质量显著提升。', color:'var(--accent-gold)'},
+  {num:3, title:'代码化思维', desc:'模型只能理解文本。将图片、表格、结构用符号或文本形式表达（如 ASCII 图、JSON 结构），模型就能「看懂」了。', color:'var(--accent-gold)'},
+  {num:4, title:'自检机制', desc:'当任务复杂模糊或回复不达预期时，在 Prompt 末尾追加「先进行检查或给出改动原因」，让模型自我审查后再输出。', color:'var(--accent-gold)'},
+];
+
+const RESOURCE_LINKS = [
+  {icon:'📘', label:'社区教程', name:'DeepSeek V4 接入 Codex', desc:'100% 可用！第三方详细步骤教程', url:'#', color:'var(--accent-secondary)'},
+  {icon:'📦', label:'官方文档', name:'DeepSeek 接入 Codex（官方）', desc:'GitHub awesome-deepseek-agent 官方指南', url:'https://github.com/deepseek-ai/awesome-deepseek-agent/blob/main/docs/codex.zh-CN.md', color:'var(--accent-secondary)'},
+  {icon:'🔧', label:'官方站点', name:'Skill 官方站点', desc:'agentskills.io — Skill 生态与文档', url:'https://agentskills.io/home', color:'var(--accent-secondary)'},
+  {icon:'🔤', label:'实用工具', name:'OpenAI Tokenizer', desc:'platform.openai.com/tokenizer 在线分词可视化', url:'https://platform.openai.com/tokenizer', color:'var(--accent-secondary)'},
+];
+
+const PROMPT_TEMPLATES = [
+  {tag:'规划', en:'Plan First', template:'请你先规划这个功能需求如何迭代制定，产出产品方案。然后跟我确认。我确定后再制定技术实现方案。', scene:'需要先对齐方向再动手', color:'var(--accent-primary)'},
+  {tag:'分步', en:'Step by Step', template:'请你先阅读链接里面的内容，然后进行理解总结。制定一个讲解阐述方案。然后跟我审核。通过后制定技术调整方案。', scene:'需要调研外部资料后推进', color:'var(--accent-secondary)'},
+  {tag:'对比＋定位', en:'Compare & Locate', template:'请你先理解以上内容，然后对照现状找出问题以及要补充的内容，制定修改内容。然后先跟我审核。确认后才可执行。', scene:'需要对照检查找差距', color:'var(--accent-gold)'},
+  {tag:'回退锚点', en:'Rollback Anchor', template:'请你对以上内容进行备份，按照 v1 命名的格式按顺序储存迭代。', scene:'关键节点存档，可随时回退', color:'#ba68c8'},
+];
+
+/* ========== STAGE: TIPS ========== */
+function StageTips() {
+  const [copiedId, setCopiedId] = useState(null);
+  const handleCopy = async (text, id) => {
+    try { await navigator.clipboard.writeText(text); } catch(e) { /* fallback */ }
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 1500);
+  };
+
+  return (
+    <SectionWrapper id="stage-tips">
+      <div style={{marginBottom:40,textAlign:'center'}}>
+        <span style={{display:'inline-block',fontFamily:'var(--font-mono)',fontSize:12,color:'var(--accent-gold)',letterSpacing:3,textTransform:'uppercase',marginBottom:16,padding:'4px 14px',border:'1px solid rgba(255,183,77,0.3)',borderRadius:20}}>Tips</span>
+        <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>Tips & 资源</h2>
+        <p style={{fontSize:16,color:'var(--text-secondary)',maxWidth:560,margin:'0 auto',lineHeight:1.8}}>使用技巧 + Prompt 模板 + 实用工具链接，让 AI 用得更顺手。</p>
+      </div>
+
+      {/* 上半区：使用技巧 + 资源链接 */}
+      <div style={{display:'flex',gap:32,flexWrap:'wrap',marginBottom:48}}>
+        {/* 左: 使用技巧 */}
+        <motion.div style={{flex:'1 1 360px'}} initial={{opacity:0,x:-30}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.5}}>
+          <h3 style={{fontFamily:'var(--font-sans)',fontSize:16,fontWeight:700,color:'var(--accent-gold)',marginBottom:16,display:'flex',alignItems:'center',gap:8}}>
+            <span>💡</span> 使用技巧
+          </h3>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+            {USAGE_TIPS.map((tip,i) => (
+              <motion.div key={i} initial={{opacity:0,x:-20}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.4,delay:i*0.08}}
+                style={{display:'flex',gap:14,padding:'16px 18px',background:'var(--bg-card)',border:'1px solid var(--border-subtle)',borderRadius:12,alignItems:'flex-start'}}
+                whileHover={{borderColor:'var(--accent-gold)',boxShadow:'var(--glow-gold)',x:4}}>
+                <span style={{fontFamily:'var(--font-mono)',fontSize:16,fontWeight:700,color:'var(--accent-gold)',minWidth:24,textAlign:'center',lineHeight:1.4}}>{tip.num}</span>
+                <div>
+                  <div style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:600,color:'var(--text-primary)',marginBottom:4}}>{tip.title}</div>
+                  <div style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.7}}>{tip.desc}</div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* 右: 资源链接 */}
+        <motion.div style={{flex:'1 1 340px'}} initial={{opacity:0,x:30}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.5}}>
+          <h3 style={{fontFamily:'var(--font-sans)',fontSize:16,fontWeight:700,color:'var(--accent-secondary)',marginBottom:16,display:'flex',alignItems:'center',gap:8}}>
+            <span>🔗</span> 资源链接
+          </h3>
+          <div style={{display:'flex',flexDirection:'column',gap:2}}>
+            {RESOURCE_LINKS.map((link,i) => (
+              <motion.a key={i} href={link.url} target="_blank" rel="noopener"
+                initial={{opacity:0,x:20}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.4,delay:i*0.08}}
+                style={{display:'flex',alignItems:'center',gap:12,padding:'14px 16px',textDecoration:'none',borderRadius:10,color:'var(--text-primary)',border:'1px solid transparent'}}
+                whileHover={{background:'rgba(79,195,247,0.04)',borderColor:'rgba(79,195,247,0.15)',x:3}}>
+                <span style={{fontSize:22,flexShrink:0}}>{link.icon}</span>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:2}}>
+                    <span style={{fontSize:10,fontFamily:'var(--font-mono)',color:'var(--accent-secondary)',padding:'1px 6px',background:'rgba(79,195,247,0.08)',borderRadius:4}}>{link.label}</span>
+                    <span style={{fontSize:13,fontWeight:600,color:'var(--text-primary)'}}>{link.name}</span>
+                  </div>
+                  <div style={{fontSize:11,color:'var(--text-muted)'}}>{link.desc}</div>
+                </div>
+                <motion.span style={{fontSize:12,color:'var(--text-muted)',flexShrink:0}} animate={{x:0}} whileHover={{x:3}}>→</motion.span>
+              </motion.a>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* 下半区：Prompt 模板 */}
+      <motion.div initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5,delay:0.2}}>
+        <h3 style={{fontFamily:'var(--font-sans)',fontSize:16,fontWeight:700,color:'#ba68c8',marginBottom:8,display:'flex',alignItems:'center',gap:8}}>
+          <span>📋</span> 常用 Prompt 后缀模板
+        </h3>
+        <p style={{fontSize:12,color:'var(--text-muted)',marginBottom:20,lineHeight:1.6}}>核心原理：<strong style={{color:'var(--accent-gold)'}}>规划 · 分步 · 对比 · 定位问题</strong> —— 每个模板可追加到你的 Prompt 末尾</p>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:16}}>
+          {PROMPT_TEMPLATES.map((t,i) => (
+            <motion.div key={i} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.4,delay:i*0.08}}
+              style={{background:'var(--bg-card)',border:`1px solid ${t.color}22`,borderRadius:14,padding:'20px',display:'flex',flexDirection:'column'}}
+              whileHover={{borderColor:t.color,boxShadow:`0 0 24px ${t.color}15`,y:-3}}>
+              <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
+                <span style={{fontSize:10,fontFamily:'var(--font-mono)',color:t.color,fontWeight:700,padding:'3px 10px',background:`${t.color}15`,borderRadius:6,textTransform:'uppercase'}}>{t.tag}</span>
+                <span style={{fontSize:10,fontFamily:'var(--font-mono)',color:'var(--text-muted)'}}>{t.en}</span>
+                <span style={{marginLeft:'auto'}}>
+                  <motion.button onClick={()=>handleCopy(t.template,i)}
+                    style={{padding:'4px 12px',fontSize:11,fontFamily:'var(--font-sans)',fontWeight:500,
+                      background:copiedId===i?`${t.color}22`:'transparent',
+                      border:`1px solid ${copiedId===i?t.color:'var(--border-subtle)'}`,
+                      borderRadius:6,color:copiedId===i?t.color:'var(--text-muted)',cursor:'pointer',whiteSpace:'nowrap'}}
+                    whileHover={{scale:1.05}} whileTap={{scale:0.95}}>
+                    {copiedId===i?'✓ 已复制':'复制'}
+                  </motion.button>
+                </span>
+              </div>
+              <div style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--text-secondary)',lineHeight:1.8,padding:'14px 16px',background:'var(--bg-deep)',borderRadius:10,border:'1px solid var(--border-subtle)',flex:1,userSelect:'all'}}>
+                {t.template}
+              </div>
+              <div style={{marginTop:10,fontSize:11,color:'var(--text-muted)',fontStyle:'italic'}}>
+                💡 适用场景：{t.scene}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </SectionWrapper>
+  );
+}
+
+/* ========== APP 
 /* ========== APP ========== */
 function App() {
   const { activeId, scrollToStage, STAGE_IDS } = useActiveStage();
@@ -1659,6 +1787,8 @@ function App() {
         <StageAgentTypes/>
         <StageConnector label="回顾全程：从预测到理解，从做事到规划"/>
         <StageConclusion/>
+        <StageConnector label="从理论到实践：一些让你的 AI 用得更好的技巧" secondary="使用技巧、Prompt 模板、实用资源一站汇总"/>
+        <StageTips/>
       </main>
       <div style={{height:'20vh'}}/>
     </>
