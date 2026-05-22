@@ -39,7 +39,7 @@ body{font-family:var(--font-sans);background:var(--bg-deep);color:var(--text-pri
 ::-webkit-scrollbar-thumb{background:var(--border-active);border-radius:3px}
 ::selection{background:rgba(100,255,218,0.2);color:var(--accent-primary)}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(79,195,247,0.04) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 40%,rgba(100,255,218,0.03) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 20% 70%,rgba(255,183,77,0.03) 0%,transparent 50%);pointer-events:none;z-index:0}
-body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(100,255,218,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(100,255,218,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(100,255,218,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(100,255,218,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}@media(max-width:640px){section{grid-template-columns:1fr!important;padding:40px 20px!important}}
 #root{position:relative;z-index:1}
 `;
 
@@ -141,13 +141,15 @@ function StageConnector({ label, secondary }) {
   return (
     <motion.div style={{display:'flex',flexDirection:'column',alignItems:'center',padding:'32px 0',position:'relative'}}
       initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true,margin:'-100px'}} transition={{duration:0.6}}>
-      <div style={{position:'relative',width:2,height:48,marginBottom:12}}>
-        <motion.div style={{width:2,height:'100%',background:'linear-gradient(to bottom,var(--accent-primary),var(--accent-gold))',transformOrigin:'top'}}
-          initial={{scaleY:0}} whileInView={{scaleY:1}} viewport={{once:true}} transition={{duration:0.8,delay:0.2}}/>
-        <motion.div style={{position:'absolute',bottom:-6,left:'50%',transform:'translateX(-50%)',width:0,height:0,borderLeft:'7px solid transparent',borderRight:'7px solid transparent',borderTop:'8px solid var(--accent-gold)'}}
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',marginBottom:12}}>
+        <div style={{position:'relative',width:2,height:48}}>
+          <motion.div style={{width:2,height:'100%',background:'linear-gradient(to bottom,var(--accent-primary),var(--accent-gold))',transformOrigin:'top'}}
+            initial={{scaleY:0}} whileInView={{scaleY:1}} viewport={{once:true}} transition={{duration:0.8,delay:0.2}}/>
+          <motion.div style={{position:'absolute',left:'50%',marginLeft:-4,width:8,height:8,borderRadius:'50%',background:'var(--accent-gold)',boxShadow:'0 0 12px rgba(255,183,77,0.6)'}}
+            animate={{top:['0%','90%']}} transition={{duration:2,repeat:Infinity,ease:'easeInOut'}}/>
+        </div>
+        <motion.div style={{width:0,height:0,borderLeft:'7px solid transparent',borderRight:'7px solid transparent',borderTop:'8px solid var(--accent-gold)',marginTop:-4}}
           initial={{opacity:0,y:-5}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.4,delay:0.8}}/>
-        <motion.div style={{position:'absolute',left:-3,width:8,height:8,borderRadius:'50%',background:'var(--accent-gold)',boxShadow:'0 0 12px rgba(255,183,77,0.6)'}}
-          animate={{top:['0%','90%']}} transition={{duration:2,repeat:Infinity,ease:'easeInOut'}}/>
       </div>
       <motion.div style={{fontFamily:'var(--font-sans)',fontSize:14,color:'var(--text-secondary)',textAlign:'center',maxWidth:420,lineHeight:1.6,padding:'10px 20px',background:'var(--bg-card)',borderRadius:8,border:'1px solid var(--border-subtle)'}}
         initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5,delay:0.3}}
@@ -209,6 +211,22 @@ function StageIntro() {
           它们经历了多个阶段的技术演进，每一次跃迁都解决了一个关键问题。
           下面我们从最基础的语言模型开始，一步步看到今天的 Agent 和 Skill 系统是如何构建出来的。
         </p>
+        <motion.div style={{display:"flex",gap:20,justifyContent:"center",marginTop:40,flexWrap:"wrap"}}
+          initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5,delay:0.3}}>
+          {[
+            {icon:"📖",title:"AI 名词黑话解读",desc:"Tokenizer、Context Window、Function Calling……每个术语用交互演示直观理解"},
+            {icon:"🗺️",title:"AI 的迭代发展路径",desc:"从预测下一个字符到自主调度 Skill，8 个阶段全景串联"},
+            {icon:"🔧",title:"每个功能背后的实际问题",desc:"为什么需要 Agent？为什么要有 Skill？每个跃迁都有它的\"不得不\""}
+          ].map((item,i) => (
+            <motion.div key={i} style={{flex:"1 1 260px",maxWidth:300,background:"var(--bg-card)",border:"1px solid var(--border-subtle)",borderRadius:8,padding:"24px 20px",textAlign:"center"}}
+              whileHover={{borderColor:"var(--border-active)",boxShadow:"var(--glow-gold)"}}>
+              <div style={{fontSize:32,marginBottom:12}}>{item.icon}</div>
+              <h3 style={{fontFamily:"var(--font-sans)",fontSize:16,fontWeight:600,color:"var(--text-primary)",marginBottom:8}}>{item.title}</h3>
+              <p style={{fontSize:13,color:"var(--text-secondary)",lineHeight:1.7,margin:0}}>{item.desc}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+
       </motion.div>
     </SectionWrapper>
   );
@@ -340,12 +358,219 @@ function Stage2() {
         </motion.div>
         <p style={{marginTop:16,fontSize:12,color:'var(--text-muted)',textAlign:'right'}}>在线体验真实 Tokenizer：<a href="https://platform.openai.com/tokenizer" target="_blank" rel="noopener" style={{color:'var(--accent-secondary)',marginLeft:4}}>platform.openai.com/tokenizer</a></p>
       </motion.div>
+
+        <motion.div style={{marginTop:40}} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6,delay:0.3}}>
+          <h3 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(15px,2vw,18px)',fontWeight:700,color:'var(--text-primary)',marginBottom:6,textAlign:'center'}}>主流基础模型的差异</h3>
+          <p style={{fontSize:13,color:'var(--text-secondary)',lineHeight:1.7,marginBottom:24,textAlign:'center',maxWidth:600,margin:'0 auto 24px'}}>
+            不同类型的模型在架构设计上存在根本差异——这决定了它们各自擅长什么。差异来源于<strong style={{color:'var(--accent-gold)'}}>训练目标</strong>和<strong style={{color:'var(--accent-gold)'}}>网络结构</strong>的不同选择。
+          </p>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:20}}>
+            {/* 通用对话模型 */}
+            <motion.div style={{background:'var(--bg-deep)',border:'1px solid var(--border-subtle)',borderRadius:14,padding:'24px 20px',textAlign:'center',overflow:'hidden'}}
+              whileHover={{borderColor:'var(--accent-primary)',boxShadow:'0 0 30px rgba(100,255,218,0.15)',y:-3}}>
+              <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',letterSpacing:2,marginBottom:6,textTransform:'uppercase'}}>通用对话模型</div>
+              <svg width="100%" height="110" viewBox="0 0 280 110" style={{maxWidth:340,margin:'10px auto 6px'}}>
+                <defs>
+                  <linearGradient id="pipe-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#64ffda" stopOpacity="0.12"/><stop offset="100%" stopColor="#64ffda" stopOpacity="0.45"/></linearGradient>
+                </defs>
+                {/* 背景管道 */}
+                <rect x="18" y="41" width="236" height="4" rx="2" fill="url(#pipe-grad)"/>
+                {/* 预训练 */}
+                <motion.rect x="20" y="28" width="56" height="30" rx="7" fill="rgba(100,255,218,0.1)" stroke="#64ffda" strokeWidth="1.5"
+                  initial={{opacity:0}} whileInView={{opacity:1}} whileHover={{boxShadow:'0 0 14px rgba(100,255,218,0.3)'}}/>
+                <text x="48" y="41" textAnchor="middle" fill="#64ffda" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">预训练</text>
+                <text x="48" y="52" textAnchor="middle" fill="rgba(100,255,218,0.55)" fontSize="8" fontFamily="var(--font-mono)">文本+代码</text>
+                {/* RLHF */}
+                <motion.rect x="108" y="28" width="56" height="30" rx="7" fill="rgba(100,255,218,0.1)" stroke="#64ffda" strokeWidth="1.5"
+                  initial={{opacity:0}} whileInView={{opacity:1}} whileHover={{boxShadow:'0 0 14px rgba(100,255,218,0.3)'}}/>
+                <text x="136" y="41" textAnchor="middle" fill="#64ffda" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">RLHF</text>
+                <text x="136" y="52" textAnchor="middle" fill="rgba(100,255,218,0.55)" fontSize="8" fontFamily="var(--font-mono)">人类反馈</text>
+                {/* 助手 */}
+                <motion.rect x="196" y="28" width="56" height="30" rx="7" fill="rgba(100,255,218,0.1)" stroke="#64ffda" strokeWidth="1.5"
+                  initial={{opacity:0}} whileInView={{opacity:1}} whileHover={{boxShadow:'0 0 14px rgba(100,255,218,0.3)'}}/>
+                <text x="224" y="41" textAnchor="middle" fill="#64ffda" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">助手</text>
+                <text x="224" y="52" textAnchor="middle" fill="rgba(100,255,218,0.55)" fontSize="8" fontFamily="var(--font-mono)">对话</text>
+                {/* 流动粒子 — 全部 cy=58 对齐管道中心 */}
+                <motion.circle r="3" cy="43" fill="#64ffda" initial={{cx:24}} animate={{cx:250}} transition={{duration:4,repeat:Infinity,ease:'linear'}}/>
+                <motion.circle r="2" cy="43" fill="rgba(100,255,218,0.6)" initial={{cx:55}} animate={{cx:250}} transition={{duration:4,repeat:Infinity,ease:'linear',delay:1.3}}/>
+                <motion.circle r="2.5" cy="43" fill="rgba(100,255,218,0.5)" initial={{cx:85}} animate={{cx:250}} transition={{duration:4,repeat:Infinity,ease:'linear',delay:2.7}}/>
+                {/* 分隔线 */}
+                <line x1="10" y1="74" x2="270" y2="74" stroke="rgba(100,255,218,0.12)" strokeWidth="1"/>
+                <text x="140" y="90" textAnchor="middle" fill="rgba(100,255,218,0.55)" fontSize="9" fontFamily="var(--font-sans)">广而不深：RLHF 教它说好话，但没教它检查自己的推理过程</text>
+              </svg>
+              <div style={{display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'3px 8px',marginTop:0}}>
+                {['OpenAI GPT-4o','Anthropic Claude 4','Google Gemini 2.5 Pro','DeepSeek-V3','Meta Llama 4','阿里 Qwen3','Mistral Large'].map((m,i)=>(
+                  <span key={i} style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',background:'rgba(100,255,218,0.04)',padding:'2px 7px',borderRadius:3}}>{m}</span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* 推理模型 */}
+            <motion.div style={{background:'var(--bg-deep)',border:'1px solid var(--border-subtle)',borderRadius:14,padding:'24px 20px',textAlign:'center',overflow:'hidden'}}
+              whileHover={{borderColor:'var(--accent-gold)',boxShadow:'0 0 30px rgba(255,183,77,0.15)',y:-3}}>
+              <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-gold)',letterSpacing:2,marginBottom:6,textTransform:'uppercase'}}>推理模型</div>
+              <svg width="100%" height="110" viewBox="0 0 280 110" style={{maxWidth:340,margin:'10px auto 6px'}}>
+                {/* 通用模型 */}
+                <motion.rect x="14" y="30" width="48" height="26" rx="6" fill="rgba(255,183,77,0.08)" stroke="#ffb74d" strokeWidth="1.2"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="38" y="46" textAnchor="middle" fill="#ffb74d" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">通用模型</text>
+                {/* 思维链 RL */}
+                <motion.rect x="96" y="14" width="72" height="54" rx="8" fill="rgba(255,183,77,0.1)" stroke="#ffb74d" strokeWidth="1.5"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="132" y="30" textAnchor="middle" fill="#ffb74d" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">思维链 RL</text>
+                <text x="132" y="44" textAnchor="middle" fill="rgba(255,183,77,0.6)" fontSize="8" fontFamily="var(--font-mono)">思考→检查</text>
+                <text x="132" y="57" textAnchor="middle" fill="rgba(255,183,77,0.6)" fontSize="8" fontFamily="var(--font-mono)">→修正→输出</text>
+                {/* 旋转光圈 — 原生 SVG animateTransform */}
+                <circle cx="132" cy="41" r="40" fill="none" stroke="#ffb74d" strokeWidth="1.5" strokeDasharray="5 4" opacity="0.7">
+                  <animateTransform attributeName="transform" type="rotate" from="0 132 41" to="360 132 41" dur="5s" repeatCount="indefinite"/>
+                </circle>
+                {/* 推理专家 */}
+                <motion.rect x="200" y="30" width="56" height="26" rx="6" fill="rgba(255,183,77,0.08)" stroke="#ffb74d" strokeWidth="1.2"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="228" y="46" textAnchor="middle" fill="#ffb74d" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">推理专家</text>
+                {/* 分隔线 */}
+                <line x1="10" y1="78" x2="270" y2="78" stroke="rgba(255,183,77,0.12)" strokeWidth="1"/>
+                <text x="140" y="94" textAnchor="middle" fill="rgba(255,183,77,0.55)" fontSize="9" fontFamily="var(--font-sans)">慢但准：每个回答先生成思考链，token 消耗大、响应慢</text>
+              </svg>
+              <div style={{display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'3px 8px',marginTop:0}}>
+                {['OpenAI o3/o4-mini','DeepSeek-R1','阿里 QwQ-32B','Google Gemini Thinking'].map((m,i)=>(
+                  <span key={i} style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',background:'rgba(255,183,77,0.04)',padding:'2px 7px',borderRadius:3}}>{m}</span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* 多模态模型 */}
+            <motion.div style={{background:'var(--bg-deep)',border:'1px solid var(--border-subtle)',borderRadius:14,padding:'24px 20px',textAlign:'center',overflow:'hidden'}}
+              whileHover={{borderColor:'#ba68c8',boxShadow:'0 0 30px rgba(186,104,200,0.15)',y:-3}}>
+              <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'#ba68c8',letterSpacing:2,marginBottom:6,textTransform:'uppercase'}}>多模态模型</div>
+              <svg width="100%" height="115" viewBox="0 0 280 115" style={{maxWidth:340,margin:'10px auto 6px'}}>
+                <defs>
+                  <radialGradient id="ripple"><stop offset="0%" stopColor="#ba68c8" stopOpacity="0.4"/><stop offset="100%" stopColor="#ba68c8" stopOpacity="0"/></radialGradient>
+                </defs>
+                {/* 图像输入 */}
+                <motion.rect x="14" y="6" width="40" height="22" rx="5" fill="rgba(186,104,200,0.08)" stroke="#ba68c8" strokeWidth="1.3"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="34" y="20" textAnchor="middle" fill="#ba68c8" fontSize="10" fontFamily="var(--font-mono)">🖼️ 图像</text>
+                {/* 文字输入 */}
+                <motion.rect x="14" y="64" width="40" height="22" rx="5" fill="rgba(186,104,200,0.08)" stroke="#ba68c8" strokeWidth="1.3"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="34" y="78" textAnchor="middle" fill="#ba68c8" fontSize="10" fontFamily="var(--font-mono)">📝 文字</text>
+                {/* 视觉编码 */}
+                <motion.rect x="62" y="4" width="48" height="24" rx="6" fill="rgba(186,104,200,0.09)" stroke="#ba68c8" strokeWidth="1.3"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="86" y="19" textAnchor="middle" fill="#ba68c8" fontSize="9" fontFamily="var(--font-mono)">视觉编码</text>
+                {/* Token化 */}
+                <motion.rect x="62" y="62" width="48" height="24" rx="6" fill="rgba(186,104,200,0.09)" stroke="#ba68c8" strokeWidth="1.3"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="86" y="77" textAnchor="middle" fill="#ba68c8" fontSize="9" fontFamily="var(--font-mono)">Token化</text>
+                {/* 汇入线 */}
+                <motion.path d="M113 16 L142 38" stroke="#ba68c8" strokeWidth="1.5" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.6,delay:0.2}}/>
+                <motion.path d="M113 74 L142 52" stroke="#ba68c8" strokeWidth="1.5" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.6,delay:0.3}}/>
+                {/* LLM 融合 */}
+                <motion.rect x="145" y="27" width="52" height="36" rx="8" fill="rgba(186,104,200,0.13)" stroke="#ba68c8" strokeWidth="1.5"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="171" y="43" textAnchor="middle" fill="#ba68c8" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">LLM</text>
+                <text x="171" y="55" textAnchor="middle" fill="rgba(186,104,200,0.6)" fontSize="8" fontFamily="var(--font-mono)">融合理解</text>
+                {/* 波纹 */}
+                <circle cx="142" cy="45" r="8" fill="none" stroke="#ba68c8" strokeWidth="1" opacity="0">
+                  <animate attributeName="r" values="8;20" dur="2s" repeatCount="indefinite"/>
+                  <animate attributeName="opacity" values="0.6;0" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                {/* 输出 */}
+                <motion.path d="M200 45 L216 45" stroke="#ba68c8" strokeWidth="1.5" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.5,delay:0.4}}/>
+                <motion.rect x="220" y="29" width="40" height="32" rx="7" fill="rgba(186,104,200,0.08)" stroke="#ba68c8" strokeWidth="1.3"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="240" y="49" textAnchor="middle" fill="#ba68c8" fontSize="12" fontFamily="var(--font-mono)">💬</text>
+                {/* 分隔线 */}
+                <line x1="10" y1="86" x2="270" y2="86" stroke="rgba(186,104,200,0.12)" strokeWidth="1"/>
+                <text x="140" y="102" textAnchor="middle" fill="rgba(186,104,200,0.55)" fontSize="9" fontFamily="var(--font-sans)">能看不能画：视觉理解 ≠ 视觉生成，后者需要额外扩散模型</text>
+              </svg>
+              <div style={{display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'3px 8px',marginTop:0}}>
+                {['OpenAI GPT-4o','Google Gemini 2.5 Flash','Anthropic Claude 4','阿里 Qwen-VL','Mistral Pixtral'].map((m,i)=>(
+                  <span key={i} style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',background:'rgba(186,104,200,0.04)',padding:'2px 7px',borderRadius:3}}>{m}</span>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* MoE 架构 */}
+            <motion.div style={{background:'var(--bg-deep)',border:'1px solid var(--border-subtle)',borderRadius:14,padding:'24px 20px',textAlign:'center',overflow:'hidden'}}
+              whileHover={{borderColor:'#81c784',boxShadow:'0 0 30px rgba(129,199,132,0.15)',y:-3}}>
+              <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'#81c784',letterSpacing:2,marginBottom:6,textTransform:'uppercase'}}>MoE 混合专家架构</div>
+              <svg width="100%" height="120" viewBox="0 0 280 120" style={{maxWidth:340,margin:'10px auto 6px'}}>
+                {/* Token 输入 */}
+                <motion.rect x="14" y="38" width="36" height="22" rx="5" fill="rgba(129,199,132,0.08)" stroke="#81c784" strokeWidth="1.3"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="32" y="52" textAnchor="middle" fill="#81c784" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">Token</text>
+                {/* 路由器 */}
+                <motion.polygon points="62,22 48,49 62,76" fill="none" stroke="#81c784" strokeWidth="1.3"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="56" y="51" textAnchor="middle" fill="#81c784" fontSize="8" fontFamily="var(--font-mono)">🎯路由</text>
+                {/* 专家 */}
+                {[{y:6,label:'数学专家',active:true},{y:36,label:'代码专家',active:true},{y:66,label:'语言专家',active:false}].map((e,i)=>(<g key={i}>
+                  <motion.rect x="86" y={e.y} width="48" height="22" rx="5"
+                    fill={e.active?"rgba(129,199,132,0.15)":"rgba(129,199,132,0.03)"}
+                    stroke={e.active?"#81c784":"rgba(129,199,132,0.25)"} strokeWidth="1.3"
+                    initial={{opacity:0}} whileInView={{opacity:e.active?1:0.4}}/>
+                  <text x="110" y={e.y+15} textAnchor="middle" fill={e.active?"#81c784":"rgba(129,199,132,0.3)"} fontSize="9" fontFamily="var(--font-mono)" fontWeight={e.active?600:400}>{e.label}</text>
+                </g>))}
+                {/* 连线 — 原生 SVG animate 循环高亮 */}
+                <line x1="62" y1="17" x2="86" y2="17" stroke="#81c784" strokeWidth="1.3" strokeDasharray="3 2">
+                  <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/>
+                </line>
+                <line x1="62" y1="47" x2="86" y2="47" stroke="#81c784" strokeWidth="1.3" strokeDasharray="3 2">
+                  <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" begin="0.8s" repeatCount="indefinite"/>
+                </line>
+                <line x1="62" y1="77" x2="86" y2="77" stroke="rgba(129,199,132,0.2)" strokeWidth="1.3" strokeDasharray="3 2">
+                  <animate attributeName="opacity" values="0.15;0.3;0.15" dur="2.5s" begin="0.4s" repeatCount="indefinite"/>
+                </line>
+                {/* 聚合 */}
+                <motion.rect x="158" y="37" width="30" height="26" rx="6" fill="rgba(129,199,132,0.1)" stroke="#81c784" strokeWidth="1.3"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="173" y="53" textAnchor="middle" fill="#81c784" fontSize="8" fontFamily="var(--font-mono)" fontWeight="600">聚合</text>
+                {/* 输出 */}
+                <motion.path d="M191 50 L210 50" stroke="#81c784" strokeWidth="1.3" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.5,delay:0.3}}/>
+                <motion.rect x="214" y="37" width="42" height="26" rx="6" fill="rgba(129,199,132,0.08)" stroke="#81c784" strokeWidth="1.3"
+                  initial={{opacity:0}} whileInView={{opacity:1}}/>
+                <text x="235" y="53" textAnchor="middle" fill="#81c784" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">输出</text>
+                {/* 说明 */}
+                <text x="140" y="94" textAnchor="middle" fill="rgba(129,199,132,0.45)" fontSize="8" fontFamily="var(--font-mono)">每次只激活 2-3 个专家，其余灰色</text>
+                {/* 分隔线 */}
+                <line x1="10" y1="102" x2="270" y2="102" stroke="rgba(129,199,132,0.12)" strokeWidth="1"/>
+                <text x="140" y="115" textAnchor="middle" fill="rgba(129,199,132,0.55)" fontSize="9" fontFamily="var(--font-sans)">显存换算力：总参数大但每次只激活小部分，部署需更大显存</text>
+              </svg>
+              <div style={{display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'3px 8px',marginTop:0}}>
+                {['DeepSeek-V3(256专家)','Mistral Mixtral 8x7B','阿里 Qwen3-MoE'].map((m,i)=>(
+                  <span key={i} style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',background:'rgba(129,199,132,0.04)',padding:'2px 7px',borderRadius:3}}>{m}</span>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+
     </SectionWrapper>
   );
 }
 
 /* ========== STAGE 3: SINGLE-TURN ========== */
 const PRESET_PROMPTS = [{q:'你是谁？',a:'我是一个 AI 模型，由深度神经网络训练而成。'},{q:'1 + 1 等于几？',a:'1 + 1 = 2'},{q:'用一句话介绍人工智能',a:'人工智能是让机器模拟人类智能行为的计算机科学分支。'}];
+
+function tokenize(text) {
+  const tokens = [];
+  let i = 0;
+  while (i < text.length) {
+    const ch = text[i];
+    if (/[\u4e00-\u9fff]/.test(ch)) { tokens.push(text[i]); i++; }
+    else if (/[a-zA-Z]/.test(ch)) { let j = i; while (j < text.length && /[a-zA-Z]/.test(text[j])) j++; tokens.push(text.slice(i, j)); i = j; }
+    else if (/[0-9]/.test(ch)) { let j = i; while (j < text.length && /[0-9]/.test(text[j])) j++; tokens.push(text.slice(i, j)); i = j; }
+    else if (ch === ' ') { tokens.push('␣'); i++; }
+    else { tokens.push(text[i]); i++; }
+  }
+  return tokens;
+}
+
+function getTokenIds(tokens) {
+  return tokens.map(t => { let h = 0; for (let i = 0; i < t.length; i++) { h = ((h << 5) - h) + t.charCodeAt(i); h |= 0; } return Math.abs(h % 90000) + 10000; });
+}
 
 function FlowBox({label,content,subtitle,active,highlight,color,large,style:{}= {}}) {
   return (
@@ -357,11 +582,46 @@ function FlowBox({label,content,subtitle,active,highlight,color,large,style:{}= 
     </motion.div>
   );
 }
+
 function FlowArrow({active,direction}) {
+  const isDown = direction === 'down';
+  const isUp = direction === 'up';
+  const isVertical = isDown || isUp;
+  if (isVertical) {
+    return (
+      <motion.div style={{display:'flex',flexDirection:'column',alignItems:'center',opacity:active?1:0.2,transition:'opacity 0.4s'}}>
+        <div style={{width:2,height:28,background:active?'linear-gradient(to bottom,var(--accent-primary),var(--accent-gold))':'var(--text-muted)'}}/>
+        <div style={{width:0,height:0,borderLeft:'6px solid transparent',borderRight:'6px solid transparent',[isDown?'borderTop':'borderBottom']:`8px solid ${active?'var(--accent-gold)':'var(--text-muted)'}`}}/>
+      </motion.div>
+    );
+  }
   return (
-    <motion.div style={{display:'flex',alignItems:'center',opacity:active?1:0.2,transition:'opacity 0.4s',transform:direction==='up'?'rotate(-90deg)':'none'}}>
+    <motion.div style={{display:'flex',alignItems:'center',opacity:active?1:0.2,transition:'opacity 0.4s'}}>
       <div style={{width:40,height:2,background:active?'linear-gradient(90deg,var(--accent-primary),var(--accent-gold))':'var(--text-muted)'}}/>
-      <motion.div style={{width:0,height:0,borderTop:'6px solid transparent',borderBottom:'6px solid transparent',borderLeft:`8px solid ${active?'var(--accent-gold)':'var(--text-muted)'}`}}/>
+      <div style={{width:0,height:0,borderTop:'6px solid transparent',borderBottom:'6px solid transparent',borderLeft:`8px solid ${active?'var(--accent-gold)':'var(--text-muted)'}`}}/>
+    </motion.div>
+  );
+}
+
+const TOKEN_COLORS_3 = ['#64ffda','#4fc3f7','#ffb74d','#f06292','#ba68c8','#4db6ac','#ff8a65','#aed581','#7986cb','#e57373'];
+
+function TokenPanel({tokens,ids,label,active,color}) {
+  if (!active) return null;
+  return (
+    <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{duration:0.4}}
+      style={{marginTop:12,padding:'10px 12px',background:'var(--bg-deep)',border:`1px solid ${color}33`,borderRadius:10,minWidth:200}}>
+      <div style={{fontFamily:'var(--font-mono)',fontSize:9,color,letterSpacing:1,marginBottom:8,textTransform:'uppercase',textAlign:'center'}}>{label}</div>
+      <div style={{display:'flex',flexDirection:'row',flexWrap:'wrap',gap:6,justifyContent:'center'}}>
+        {tokens.map((token,i) => (
+          <motion.span key={i} initial={{opacity:0,scale:0.8}} animate={{opacity:1,scale:1}} transition={{delay:i*0.08}}
+            style={{display:'inline-flex',alignItems:'center',gap:4,padding:'3px 6px',borderRadius:4,background:`${TOKEN_COLORS_3[i%TOKEN_COLORS_3.length]}11`,whiteSpace:'nowrap'}}>
+            <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:TOKEN_COLORS_3[i%TOKEN_COLORS_3.length],fontWeight:600,background:`${TOKEN_COLORS_3[i%TOKEN_COLORS_3.length]}22`,padding:'2px 5px',borderRadius:3}}>{token === '␣' ? '空格' : token}</span>
+            <span style={{fontSize:9,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>→</span>
+            <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--text-secondary)',fontWeight:500}}>{ids[i]}</span>
+          </motion.span>
+        ))}
+      </div>
+      <div style={{marginTop:6,fontSize:10,color:'var(--text-muted)',textAlign:'center',fontFamily:'var(--font-mono)'}}>{tokens.length} 个 token</div>
     </motion.div>
   );
 }
@@ -370,6 +630,10 @@ function Stage3() {
   const [step,setStep]=useState(0);
   const [selected,setSelected]=useState(0);
   const prompt=PRESET_PROMPTS[selected];
+  const promptTokens=tokenize(prompt.q);
+  const promptIds=getTokenIds(promptTokens);
+  const answerTokens=tokenize(prompt.a);
+  const answerIds=getTokenIds(answerTokens);
   const advance=()=>setStep(s=>Math.min(s+1,4));
   const reset=()=>setStep(0);
   return (
@@ -378,7 +642,7 @@ function Stage3() {
         <StageBadge num={3}/>
         <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>单次对话</h2>
         <p style={{fontSize:18,color:'var(--accent-gold)',fontWeight:500,marginBottom:8}}>难度 ⭐</p>
-        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:600}}>LLM 被包装成对话接口。用户输入 Prompt（提示词），经过 Tokenizer 编码为 token，模型推理预测后，再由 Tokenizer 解码回自然语言返回给用户。</p>
+        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:600}}>LLM 被包装成对话接口。用户输入 Prompt（提示词），经过 Tokenizer 编码为 token ID，模型推理预测后，再由 Tokenizer 解码回自然语言返回给用户。</p>
       </div>
       <motion.div style={{background:'var(--bg-card)',borderRadius:16,border:'1px solid var(--border-subtle)',padding:32}}
         initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}>
@@ -392,21 +656,34 @@ function Stage3() {
             <button onClick={advance} disabled={step>=4}
               style={{padding:'8px 20px',fontSize:13,fontFamily:'var(--font-sans)',background:step>=4?'var(--bg-deep)':'var(--accent-primary)',border:'none',borderRadius:8,color:step>=4?'var(--text-muted)':'var(--bg-deep)',cursor:step>=4?'default':'pointer',fontWeight:600}}>逐步演示 →</button>
             <button onClick={reset} style={{padding:'8px 16px',fontSize:13,fontFamily:'var(--font-sans)',background:'transparent',border:'1px solid var(--border-subtle)',borderRadius:8,color:'var(--text-secondary)',cursor:'pointer'}}>重置</button>
+            <span style={{fontSize:11,color:'var(--text-muted)',fontFamily:'var(--font-mono)',alignSelf:'center'}}>步骤 {step}/4</span>
           </div>
         </div>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'center',flexWrap:'wrap',gap:16,position:'relative'}}>
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0}}>
+          {/* Step 0: User */}
           <FlowBox label="用户" content={`"${prompt.q}"`} subtitle="Prompt 输入" active={step>=0} highlight={step===0} color="var(--accent-gold)"/>
-          <FlowArrow active={step>=1}/>
-          <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-            <FlowBox label="Tokenizer" content="编码" subtitle="Prompt → Token" active={step>=1} highlight={step===1} color="var(--accent-secondary)"/>
-            {step>=3&&<motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} style={{marginTop:8}}><FlowArrow active={true} direction="up"/></motion.div>}
-            {step>=3&&<FlowBox label="Tokenizer" content="解码" subtitle="Token → 文本" active={step>=3} highlight={step===3} color="var(--accent-secondary)"/>}
-          </div>
-          <FlowArrow active={step>=2}/>
-          <FlowBox label="LLM 模型" content="推理预测" subtitle="核心计算" active={step>=2} highlight={step===2} color="var(--accent-primary)" large/>
-          <FlowArrow active={step>=3}/>
-          <AnimatePresence>{step>=4&&<motion.div initial={{opacity:0,x:30}} animate={{opacity:1,x:0}} transition={{duration:0.5}}>
-            <FlowBox label="输出结果" content={`"${prompt.a}"`} subtitle="最终回答" active={true} highlight={true} color="var(--accent-gold)"/></motion.div>}</AnimatePresence>
+          {/* Arrow + Step 1 */}
+          <AnimatePresence>{step>=1 && <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <FlowArrow active={true} direction="down"/>
+            <FlowBox label="Tokenizer" content="编码" subtitle="Prompt → Token ID" active={true} highlight={step===1} color="var(--accent-secondary)"/>
+            <TokenPanel tokens={promptTokens} ids={promptIds} label="Token 编码映射" active={true} color="var(--accent-secondary)"/>
+          </motion.div>}</AnimatePresence>
+          {/* Arrow + Step 2 */}
+          <AnimatePresence>{step>=2 && <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <FlowArrow active={true} direction="down"/>
+            <FlowBox label="LLM 模型" content="推理预测" subtitle="核心计算" active={true} highlight={step===2} color="var(--accent-primary)" large/>
+          </motion.div>}</AnimatePresence>
+          {/* Arrow + Step 3 */}
+          <AnimatePresence>{step>=3 && <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <FlowArrow active={true} direction="down"/>
+            <FlowBox label="Tokenizer" content="解码" subtitle="Token ID → 文本" active={true} highlight={step===3} color="var(--accent-secondary)"/>
+            <TokenPanel tokens={answerTokens} ids={answerIds} label="Token 解码映射" active={true} color="var(--accent-secondary)"/>
+          </motion.div>}</AnimatePresence>
+          {/* Arrow + Step 4 */}
+          <AnimatePresence>{step>=4 && <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+            <FlowArrow active={true} direction="down"/>
+            <FlowBox label="输出结果" content={`"${prompt.a}"`} subtitle="最终回答" active={true} highlight={true} color="var(--accent-gold)"/>
+          </motion.div>}</AnimatePresence>
         </div>
       </motion.div>
     </SectionWrapper>
@@ -438,7 +715,7 @@ function Stage4() {
         <StageBadge num={4}/>
         <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>多次对话</h2>
         <p style={{fontSize:18,color:'var(--accent-gold)',fontWeight:500,marginBottom:8}}>难度 ⭐⭐</p>
-        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:640}}>真正的对话不会只进行一次。在多轮对话中，LLM 需要「记住」之前的对话历史。这个记忆的容量上限被称为 <strong style={{color:'var(--accent-primary)'}}>Context Window（上下文窗口）</strong>，超出窗口的旧内容会被遗忘。</p>
+        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:640}}>真正的对话不会只进行一次。每次新对话，LLM 需要将全部历史重新读一遍——这就是 <strong style={{color:'var(--accent-primary)'}}>Context（上下文）</strong>。但上下文窗口有硬性容量上限，超出则截断旧内容。为了突破限制，又演化出了 <strong style={{color:'#b388ff'}}>Memory（记忆）</strong> 补偿机制。</p>
       </div>
       <motion.div style={{background:'var(--bg-card)',borderRadius:16,border:'1px solid var(--border-subtle)',padding:32}}
         initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}>
@@ -449,33 +726,6 @@ function Stage4() {
             <ChatBubble role="ai" text={ROUND_A.ai} delay={0.3}/>
           </div>
         </div>
-        <motion.div style={{border:'1px dashed var(--border-active)',borderRadius:10,padding:20,marginBottom:24,position:'relative',background:'rgba(100,255,218,0.03)'}}
-          initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.6}}>
-          <div style={{position:'absolute',top:-10,left:16,background:'var(--bg-card)',padding:'2px 10px',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)'}}>Context Window（上下文窗口）</div>
-          <div style={{marginTop:8}}>
-            <div style={{display:'flex',gap:12,marginBottom:12}}>
-              <div style={{flex:'0 0 auto',padding:'8px 12px',background:'rgba(100,255,218,0.06)',borderRadius:6,border:'1px solid rgba(100,255,218,0.15)'}}>
-                <p style={{fontSize:10,color:'var(--accent-primary)',fontFamily:'var(--font-mono)',marginBottom:4}}>A 轮完整对话历史</p>
-                <p style={{fontSize:11,color:'var(--text-secondary)',fontFamily:'var(--font-mono)'}}>用户: "{ROUND_A.user}"</p>
-                <p style={{fontSize:11,color:'var(--text-secondary)',fontFamily:'var(--font-mono)'}}>LLM: "{ROUND_A.ai}"</p>
-              </div>
-              <div style={{display:'flex',alignItems:'center',fontFamily:'var(--font-mono)',fontSize:18,color:'var(--accent-gold)'}}>+</div>
-              <div style={{flex:'0 0 auto',padding:'8px 12px',background:'rgba(255,183,77,0.06)',borderRadius:6,border:'1px solid rgba(255,183,77,0.2)'}}>
-                <p style={{fontSize:10,color:'var(--accent-gold)',fontFamily:'var(--font-mono)',marginBottom:4}}>B 轮新 Prompt</p>
-                <p style={{fontSize:11,color:'var(--text-secondary)',fontFamily:'var(--font-mono)'}}>用户: "{ROUND_B_USER}"</p>
-              </div>
-            </div>
-            <div style={{display:'flex',alignItems:'center',gap:10}}>
-              <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)',whiteSpace:'nowrap'}}>窗口用量</span>
-              <div style={{flex:1,height:8,background:'var(--bg-deep)',borderRadius:4,overflow:'hidden'}}>
-                <motion.div style={{height:'100%',borderRadius:4,background:'linear-gradient(90deg,var(--accent-primary),var(--accent-gold))'}}
-                  initial={{width:'0%'}} whileInView={{width:showRoundB?'45%':'30%'}} viewport={{once:true}} transition={{duration:0.8,delay:0.4}}/>
-              </div>
-              <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)'}}>{showRoundB?'45%':'30%'}</span>
-              <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)',whiteSpace:'nowrap'}}>/ 最大 128K tokens</span>
-            </div>
-          </div>
-        </motion.div>
         {!showRoundB?(
           <motion.button onClick={()=>setShowRoundB(true)}
             style={{display:'block',margin:'0 auto',padding:'10px 24px',fontSize:14,fontFamily:'var(--font-sans)',fontWeight:600,background:'var(--accent-primary)',border:'none',borderRadius:8,color:'var(--bg-deep)',cursor:'pointer'}}
@@ -487,9 +737,145 @@ function Stage4() {
               <ChatBubble role="user" text={ROUND_B_USER} delay={0}/>
               <ChatBubble role="ai" text={ROUND_B_AI} delay={0.3}/>
             </div>
+            {/* Context Panel */}
+            <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5,delay:0.5}} style={{marginTop:28}}>
+              <div style={{border:'1px solid rgba(100,255,218,0.2)',borderRadius:12,padding:'20px 22px',background:'rgba(100,255,218,0.04)',marginBottom:16}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
+                  <span style={{fontSize:18}}>📥</span>
+                  <span style={{fontFamily:'var(--font-sans)',fontSize:15,fontWeight:700,color:'var(--accent-primary)'}}>Context（上下文）</span>
+                  <span style={{fontSize:11,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>—— LLM 实际收到的内容</span>
+                </div>
+                <div style={{display:'flex',flexDirection:'column',gap:8}}>
+                  <motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:0.55}}
+                    style={{padding:'8px 12px',background:'rgba(100,255,218,0.05)',borderRadius:6,borderLeft:'3px solid rgba(100,255,218,0.3)',fontSize:11,color:'var(--text-muted)',fontFamily:'var(--font-mono)',lineHeight:1.6}}>
+                    系统提示：你是 AI 助手，请友好、准确地回答问题
+                  </motion.div>
+                  <motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:0.65}}
+                    style={{padding:'10px 12px',background:'rgba(100,255,218,0.04)',borderRadius:6,border:'1px solid rgba(100,255,218,0.1)'}}>
+                    <div style={{fontSize:10,color:'var(--accent-primary)',fontFamily:'var(--font-mono)',marginBottom:6}}>A 轮对话历史</div>
+                    <div style={{display:'flex',flexDirection:'column',gap:3}}>
+                      <span style={{fontSize:11,color:'var(--text-secondary)'}}>👤 "{ROUND_A.user}"</span>
+                      <span style={{fontSize:11,color:'var(--text-secondary)'}}>🤖 "{ROUND_A.ai}"</span>
+                    </div>
+                  </motion.div>
+                  <motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:0.75}}
+                    style={{padding:'10px 12px',background:'rgba(255,183,77,0.06)',borderRadius:6,border:'1px solid rgba(255,183,77,0.25)',position:'relative'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
+                      <span style={{fontSize:10,color:'var(--accent-gold)',fontFamily:'var(--font-mono)',fontWeight:600}}>B 轮新消息</span>
+                      <span style={{fontSize:10,background:'rgba(255,183,77,0.2)',color:'var(--accent-gold)',padding:'1px 6px',borderRadius:4,fontFamily:'var(--font-mono)'}}>🆕</span>
+                    </div>
+                    <span style={{fontSize:11,color:'var(--text-secondary)'}}>👤 "{ROUND_B_USER}"</span>
+                  </motion.div>
+                </div>
+                <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.7,marginTop:14}}>用户只发了 6 个字，但 LLM 收到的是<strong style={{color:'var(--accent-primary)'}}>System Prompt + A轮历史 + 最新 User Prompt</strong>全部打包。这就是 Context——每轮对话都在增长。</p>
+              </div>
+              <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.85}}
+                style={{textAlign:'center',marginBottom:10}}>
+                <span style={{fontSize:12,color:'var(--text-muted)',fontFamily:'var(--font-sans)'}}>这个「全部历史」能装多少？有上限吗？ ↓</span>
+              </motion.div>
+              {/* Context Window Panel */}
+              <div style={{border:'1px solid rgba(255,183,77,0.2)',borderRadius:12,padding:'20px 22px',background:'rgba(255,183,77,0.04)',marginBottom:16}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
+                  <span style={{fontSize:18}}>📏</span>
+                  <span style={{fontFamily:'var(--font-sans)',fontSize:15,fontWeight:700,color:'var(--accent-gold)'}}>Context Window（上下文窗口）</span>
+                  <span style={{fontSize:11,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>—— 能装多少？</span>
+                </div>
+                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}>
+                  <div style={{flex:1,height:14,background:'var(--bg-deep)',borderRadius:7,overflow:'hidden',display:'flex'}}>
+                    <motion.div initial={{width:'0%'}} animate={{width:'5%'}} transition={{duration:0.6,delay:0.8}} style={{height:'100%',background:'var(--accent-primary)',opacity:0.6}}/>
+                    <motion.div initial={{width:'0%'}} animate={{width:'15%'}} transition={{duration:0.6,delay:0.9}} style={{height:'100%',background:'var(--accent-primary)',opacity:0.4}}/>
+                    <motion.div initial={{width:'0%'}} animate={{width:'20%'}} transition={{duration:0.6,delay:1.0}} style={{height:'100%',background:'var(--accent-gold)',opacity:0.4}}/>
+                  </div>
+                  <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--accent-gold)',fontWeight:600}}>40%</span>
+                </div>
+                <div style={{display:'flex',justifyContent:'space-between',marginBottom:12}}>
+                  <span style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>系统 5%</span>
+                  <span style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>A轮 15%</span>
+                  <span style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>B轮 20%</span>
+                  <span style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>剩余 60%</span>
+                </div>
+                <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.7}}>上限 <strong style={{color:'var(--accent-gold)'}}>128K tokens</strong>，当前仅用 40%。<strong style={{color:'#ff6b6b'}}>⚠️ 一旦超过 100%，最早的消息被截断丢弃</strong>——这就是长对话中 LLM「失忆」的根本原因。</p>
+              </div>
+              <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1.0}}
+                style={{textAlign:'center',marginBottom:10}}>
+                <span style={{fontSize:12,color:'var(--text-muted)',fontFamily:'var(--font-sans)'}}>容量不够了怎么办？ ↓</span>
+              </motion.div>
+              {/* Memory Panel */}
+              <div style={{border:'1px solid rgba(179,136,255,0.25)',borderRadius:12,padding:'20px 22px',background:'rgba(179,136,255,0.04)'}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
+                  <span style={{fontSize:18}}>🧩</span>
+                  <span style={{fontFamily:'var(--font-sans)',fontSize:15,fontWeight:700,color:'#b388ff'}}>Memory（记忆）</span>
+                  <span style={{fontSize:11,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>—— 超了怎么办？</span>
+                </div>
+                <div style={{display:'flex',flexDirection:'column',gap:10}}>
+                  {[['📝 摘要记忆','LLM 定期将旧对话压缩为一段摘要，极省 token 但保留关键信息','"之前聊过用户的身份和偏好…"'],['🔍 向量记忆 RAG','历史存入向量数据库，按语义检索相关片段注入上下文','新问题 → 匹配旧片段 → 补充上下文'],['💾 持久记忆','用户偏好/事实存入持久存储，跨会话自动加载','"用户叫小王，喜欢简洁回答"']].map(([title,desc,example],i)=>(
+                    <motion.div key={i} initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:1.1+i*0.15}}
+                      style={{padding:'10px 14px',background:'rgba(179,136,255,0.06)',borderRadius:8,border:'1px solid rgba(179,136,255,0.15)'}}>
+                      <div style={{fontSize:13,color:'#b388ff',fontWeight:600,fontFamily:'var(--font-sans)',marginBottom:3}}>{title}</div>
+                      <div style={{fontSize:11,color:'var(--text-secondary)',lineHeight:1.6,marginBottom:3}}>{desc}</div>
+                      <div style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',fontStyle:'italic'}}>例：{example}</div>
+                    </motion.div>
+                  ))}
+                </div>
+                <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.7,marginTop:12}}><strong style={{color:'#b388ff'}}>Context Window 是硬限制，Memory 是绕过它的补偿策略。</strong>两者不是替代关系——Memory 在窗口之上搭建，帮助 LLM 在有限容量内记住更多。</p>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </motion.div>
+<motion.div style={{background:'var(--bg-card)',borderRadius:16,border:'1px solid var(--border-subtle)',padding:28,marginTop:28}}
+        initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6}}>
+        <h3 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(16px,2vw,20px)',fontWeight:700,color:'var(--text-primary)',marginBottom:6}}>Prompt 的类型与规则</h3>
+        <p style={{fontSize:13,color:'var(--text-secondary)',lineHeight:1.7,marginBottom:20}}>LLM 每次收到的内容由两类 Prompt 组成——用户看到的只是冰山一角。</p>
+        <div style={{display:'flex',flexDirection:'column',gap:10}}>
+          <motion.div initial={{opacity:0,y:15}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:0.15}}
+            style={{padding:'14px 18px',background:'var(--bg-deep)',borderRadius:10,border:'1px solid rgba(100,255,218,0.25)'}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+              <span style={{fontSize:16}}>🔧</span>
+              <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:'var(--accent-primary)'}}>System Prompt（系统提示词）</span>
+              <span style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>— 开发者设定</span>
+            </div>
+            <div style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--text-secondary)',background:'rgba(100,255,218,0.06)',padding:'8px 12px',borderRadius:6,borderLeft:'3px solid var(--accent-primary)',lineHeight:1.6}}>
+              你是 AI 助手，请友好、准确地回答问题。
+            </div>
+            <div style={{display:'flex',gap:16,marginTop:8,fontSize:10}}>
+              <span style={{color:'var(--text-muted)'}}>用户看不到</span>
+              <span style={{color:'var(--text-muted)'}}>每轮固定不变</span>
+              <span style={{color:'var(--accent-gold)',fontWeight:600}}>优先级最高</span>
+            </div>
+          </motion.div>
+          <motion.div initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.25}}
+            style={{textAlign:'center',fontSize:15,color:'var(--accent-gold)',fontWeight:600}}>⬇️ System Prompt 约束 User Prompt ↓</motion.div>
+          <motion.div initial={{opacity:0,y:15}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:0.3}}
+            style={{padding:'14px 18px',background:'var(--bg-deep)',borderRadius:10,border:'1px solid rgba(255,183,77,0.25)'}}>
+            <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+              <span style={{fontSize:16}}>💬</span>
+              <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:'var(--accent-gold)'}}>User Prompt（用户提示词）</span>
+              <span style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>— 用户输入</span>
+            </div>
+            <div style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.6}}>用户每次发送的消息。用户可见，每轮都在变化，但不能违反 System Prompt 设定的边界。</div>
+            <div style={{display:'flex',gap:16,marginTop:8,fontSize:10}}>
+              <span style={{color:'var(--text-muted)'}}>用户可见</span>
+              <span style={{color:'var(--text-muted)'}}>每轮都在变化</span>
+              <span style={{color:'var(--accent-gold)',fontWeight:600}}>不能违反系统规则</span>
+            </div>
+          </motion.div>
+        </div>
+        <motion.div initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.4}}
+          style={{marginTop:14,padding:'12px 16px',background:'rgba(79,195,247,0.04)',borderRadius:8,border:'1px solid rgba(79,195,247,0.15)'}}>
+          <div style={{fontSize:12,color:'var(--accent-secondary)',fontWeight:600,marginBottom:4}}>💡 System Prompt 每轮都重复发送吗？</div>
+          <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.7}}>
+            <strong style={{color:'var(--accent-secondary)'}}>是的。</strong>
+            LLM 是无状态的——每次推理都重新接收<strong>完整的</strong> System Prompt + 全部历史 + 最新消息。
+            这意味着 System Prompt 每轮都消耗 token，所以开发者会尽量把它写得简洁——
+            这也是 Context 面板中系统提示固定占据约 5% 的原因。
+          </p>
+        </motion.div>
+        <div style={{marginTop:10,textAlign:'center',fontSize:12,color:'var(--text-secondary)'}}>
+          ⚖️ <strong style={{color:'var(--accent-primary)'}}>System Prompt &gt; User Prompt</strong>  ·  同一模型 + 不同 System Prompt = 完全不同的「人设」
+        </div>
+      </motion.div>
+
     </SectionWrapper>
   );
 }
@@ -786,15 +1172,15 @@ function App() {
       <main>
         <StageCover/>
         <StageIntro/>
-        <StageConnector label="模型体积增大 + 训练数据规模扩张 → 涌现智能" secondary="从简单的统计预测到大规模神经网络的跃迁"/>
+        <StageConnector label="从最基础的原理出发：语言模型的核心——预测下一个字符"/>
         <Stage1/>
-        <StageConnector label="将 LLM 包装为对话接口，面向用户服务" secondary="模型不再只是实验室里的研究产物"/>
+        <StageConnector label="模型体积增大 + 训练数据规模扩张 → 涌现智能" secondary="从简单的统计预测到大规模神经网络的跃迁"/>
         <Stage2/>
-        <StageConnector label="对话不能只做一次，需要持续的上下文交互"/>
+        <StageConnector label="将 LLM 包装为对话接口，面向用户服务" secondary="模型不再只是实验室里的研究产物"/>
         <Stage3/>
-        <StageConnector label="换个角度使用对话：不只是聊天，而是处理真实任务"/>
+        <StageConnector label="对话不能只做一次，需要持续的上下文交互"/>
         <Stage4/>
-        <StageConnector label="用户想让 LLM 处理需要实时数据的任务（天气、股价等）" secondary="但 LLM 的知识截止于训练数据"/>
+        <StageConnector label="换个角度使用对话：不只是聊天，而是处理真实任务"/>
         <Stage5/>
         <StageConnector label="突破 LLM 自身知识边界，接入外部工具能力" secondary="Function Calling + MCP 让模型与外部世界交互"/>
         <Stage6/>
