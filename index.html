@@ -89,6 +89,22 @@ function useScrollProgress() {
     return () => window.removeEventListener('scroll', calc);
   }, []);
   return progress;
+
+function useGlossaryNavigate(onClose) {
+  return useCallback((stageId, subId) => {
+    onClose();
+    const targetId = subId || stageId;
+    setTimeout(() => {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.style.transition = 'box-shadow 0.3s';
+        el.style.boxShadow = '0 0 40px rgba(255,183,77,0.5)';
+        setTimeout(() => { el.style.boxShadow = ''; }, 1500);
+      }
+    }, 350);
+  }, [onClose]);
+}
 }
 
 /* ========== COMPONENTS ========== */
@@ -97,6 +113,42 @@ const LABELS = {
   'stage-3':'对话','stage-4':'记忆','stage-5':'任务','stage-6':'工具',
   'stage-7':'Agent','stage-8':'Skill','stage-agent-types':'分化','stage-conclusion':'结语'
 };
+
+const GLOSSARY = [
+  {term:'语言模型',en:'LM',def:'根据上文预测下一个字符的统计模型',stage:'stage-1',sub:''},
+  {term:'Token',en:'Token',def:'语言模型处理的最小文本单元，可以是字、词或子词',stage:'stage-1',sub:''},
+  {term:'大语言模型',en:'LLM',def:'参数规模巨大、涌现出推理能力的语言模型',stage:'stage-2',sub:''},
+  {term:'Tokenizer',en:'Tokenizer',def:'将文本切分为 Token 序列的分词器',stage:'stage-2',sub:'tokenizer-demo'},
+  {term:'预训练 + RLHF',en:'Pretrain + RLHF',def:'先在海量文本上学习，再用人类反馈微调对齐',stage:'stage-2',sub:''},
+  {term:'通用对话模型',en:'General Chat',def:'擅长日常对话，覆盖面广，速度快',stage:'stage-2',sub:'model-cards'},
+  {term:'推理模型',en:'Reasoning Model',def:'回答前先生成思考链自我修正，慢但准确',stage:'stage-2',sub:'model-cards'},
+  {term:'多模态模型',en:'Multimodal',def:'能同时理解文字、图像等多种输入形式',stage:'stage-2',sub:'model-cards'},
+  {term:'MoE 架构',en:'Mixture of Experts',def:'每次只激活部分专家子网络，更少算力运行更大模型',stage:'stage-2',sub:'model-cards'},
+  {term:'Prompt',en:'Prompt',def:'用户输入给模型的指令或问题',stage:'stage-3',sub:''},
+  {term:'编码',en:'Encode',def:'Tokenizer 将文本转为 Token ID 序列',stage:'stage-3',sub:''},
+  {term:'解码',en:'Decode',def:'Tokenizer 将 Token ID 序列还原为文本',stage:'stage-3',sub:''},
+  {term:'上下文',en:'Context',def:'发送给 LLM 的全部文本内容，包括提示词和历史',stage:'stage-4',sub:''},
+  {term:'上下文窗口',en:'Context Window',def:'LLM 能处理的最大 Token 数量上限',stage:'stage-4',sub:''},
+  {term:'记忆',en:'Memory',def:'跨越单次对话持久保存信息的能力，不是 Context 的一部分',stage:'stage-4',sub:''},
+  {term:'System Prompt',en:'System Prompt',def:'设定模型角色和行为的顶层指令，优先级高于 User Prompt',stage:'stage-4',sub:''},
+  {term:'User Prompt',en:'User Prompt',def:'用户每次输入的对话内容，优先级低于 System Prompt',stage:'stage-4',sub:''},
+  {term:'幻觉',en:'Hallucination',def:'LLM 在没有准确信息时编造看似合理但错误的内容',stage:'stage-5',sub:''},
+  {term:'Agent / 智能体',en:'Agent',def:'以 LLM 为大脑、能调用工具完成任务的自治系统',stage:'stage-6',sub:''},
+  {term:'Function Calling',en:'Function Calling',def:'LLM 生成结构化调用请求来触发外部工具',stage:'stage-6',sub:''},
+  {term:'MCP',en:'Model Context Protocol',def:'连接 Agent 与外部能力系统的标准通信协议',stage:'stage-6',sub:''},
+  {term:'Agent Runtime',en:'Agent Runtime',def:'Agent 系统中负责调度工具、管理工作流的执行层',stage:'stage-6',sub:''},
+  {term:'RAG',en:'Retrieval-Augmented Generation',def:'从外部知识库检索相关片段注入上下文再生成回答',stage:'stage-6',sub:''},
+  {term:'Web Search',en:'Web Search',def:'实时搜索引擎接入，让 LLM 获取最新网络信息',stage:'stage-6',sub:''},
+  {term:'Workflow / 工作流',en:'Workflow',def:'预设的多步骤执行流程，A→B→C 串行执行',stage:'stage-7',sub:''},
+  {term:'子 Agent',en:'Sub Agent',def:'嵌入总 Agent 内部、负责特定子任务的专用 Agent',stage:'stage-7',sub:''},
+  {term:'编排',en:'Orchestration',def:'总 Agent 协调多个子 Agent 和 Workflow 的调度逻辑',stage:'stage-7',sub:''},
+  {term:'Skill / 技能',en:'Skill',def:'以文本形式定义的可复用能力单元，注入 LLM 上下文后生效',stage:'stage-8',sub:''},
+  {term:'SKILL.md',en:'SKILL.md',def:'Skill 的载体文件，包含指令、工具权限和输出规范',stage:'stage-8',sub:''},
+  {term:'上下文注入',en:'Context Injection',def:'将 Skill 文本动态插入 LLM 的 System Prompt 使其「学会」新能力',stage:'stage-8',sub:''},
+  {term:'编码 Agent',en:'Coding Agent',def:'Tool 聚焦 IDE/Git，Skill 聚焦代码质量，WF 为写→测→修',stage:'stage-agent-types',sub:''},
+  {term:'研究 Agent',en:'Research Agent',def:'Tool 聚焦搜索/论文，Skill 聚焦综合/引用，WF 为搜→读→综合',stage:'stage-agent-types',sub:''},
+  {term:'通用 Agent',en:'General Agent',def:'Tool 覆盖广泛，Skill 灵活适配，WF 动态路由',stage:'stage-agent-types',sub:''}
+];
 
 function NavIndicator({ activeId, stageIds, onNavigate, progress }) {
   return (
@@ -167,6 +219,103 @@ const StageBadge = ({ num }) => (
   </span>
 );
 
+
+/* ========== GLOSSARY COMPONENTS ========== */
+function GlossaryButton({ open, onClick }) {
+  return (
+    <motion.button onClick={onClick} title="术语词典"
+      style={{position:'fixed',left:28,top:'50%',transform:'translateY(-50%)',zIndex:99,
+        width:40,height:40,borderRadius:'50%',border:'1px solid var(--border-subtle)',
+        background:open?'rgba(100,255,218,0.1)':'var(--bg-card)',cursor:'pointer',
+        display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,color:'var(--text-primary)'}}
+      whileHover={{scale:1.1,boxShadow:'0 0 20px rgba(100,255,218,0.25)',borderColor:'var(--accent-primary)'}}
+      whileTap={{scale:0.9}}>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+      </svg>
+    </motion.button>
+  );
+}
+
+const GROUPED_GLOSSARY = (()=>{
+  const stageOrder = ['stage-1','stage-2','stage-3','stage-4','stage-5','stage-6','stage-7','stage-8','stage-agent-types'];
+  const groups = {};
+  const stageNames = {'stage-1':'阶段 1 · 语言模型','stage-2':'阶段 2 · LLM 大语言模型','stage-3':'阶段 3 · 单次对话','stage-4':'阶段 4 · 多次对话','stage-5':'阶段 5 · 任务转向','stage-6':'阶段 6 · Agent 与工具','stage-7':'阶段 7 · Workflow','stage-8':'阶段 8 · Skill 系统','stage-agent-types':'阶段 8.5 · Agent 分化'};
+  GLOSSARY.forEach(g => {
+    if(!groups[g.stage]) groups[g.stage] = {name:stageNames[g.stage]||g.stage,items:[]};
+    groups[g.stage].items.push(g);
+  });
+  return stageOrder.filter(s=>groups[s]).map(s=>groups[s]);
+})();
+
+function GlossaryPanel({ onClose, onNavigate }) {
+  const [collapsed, setCollapsed] = useState({});
+  const toggleGroup = (name) => setCollapsed(prev=>({...prev,[name]:!prev[name]}));
+
+  return (
+    <motion.div key="glossary-overlay" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.25}}
+      style={{position:'fixed',inset:0,zIndex:98,background:'rgba(0,0,0,0.4)',backdropFilter:'blur(4px)'}}
+      onClick={onClose}>
+      <motion.div initial={{x:-420}} animate={{x:0}} exit={{x:-420}} transition={{duration:0.3,ease:'easeInOut'}}
+        onClick={e=>e.stopPropagation()}
+        style={{position:'fixed',left:0,top:0,bottom:0,width:'380px',maxWidth:'100vw',
+          background:'var(--bg-deep)',borderRight:'1px solid var(--border-subtle)',
+          display:'flex',flexDirection:'column',zIndex:98,overflow:'hidden'}}>
+        {/* Header */}
+        <div style={{padding:'20px 24px 16px',borderBottom:'1px solid var(--border-subtle)',display:'flex',alignItems:'center',justifyContent:'space-between',flexShrink:0}}>
+          <div style={{display:'flex',alignItems:'center',gap:10}}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+            </svg>
+            <h3 style={{fontFamily:'var(--font-sans)',fontSize:18,fontWeight:700,color:'var(--text-primary)',margin:0}}>术语词典</h3>
+            <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--text-muted)'}}>{GLOSSARY.length} 个术语</span>
+          </div>
+          <motion.button onClick={onClose} whileHover={{scale:1.1,color:'var(--accent-gold)'}} whileTap={{scale:0.9}}
+            style={{background:'none',border:'none',color:'var(--text-muted)',cursor:'pointer',fontSize:20,lineHeight:1,padding:4}}>✕</motion.button>
+        </div>
+        {/* Content */}
+        <div style={{overflowY:'auto',flex:1,padding:'8px 0'}}>
+          {GROUPED_GLOSSARY.map(group => {
+            const isCollapsed = collapsed[group.name];
+            return (
+              <div key={group.name} style={{borderBottom:'1px solid var(--border-subtle)'}}>
+                <motion.button onClick={()=>toggleGroup(group.name)}
+                  style={{display:'flex',alignItems:'center',gap:8,width:'100%',padding:'12px 24px',
+                    background:'none',border:'none',cursor:'pointer',color:'var(--accent-primary)',
+                    fontFamily:'var(--font-sans)',fontSize:13,fontWeight:600,textAlign:'left'}}
+                  whileHover={{background:'rgba(100,255,218,0.03)'}}>
+                  <motion.span animate={{rotate:isCollapsed?-90:0}} transition={{duration:0.2}} style={{fontSize:10,display:'inline-block'}}>▼</motion.span>
+                  <span>{group.name}</span>
+                  <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)',marginLeft:'auto'}}>{group.items.length}</span>
+                </motion.button>
+                <AnimatePresence>
+                  {!isCollapsed && (
+                    <motion.div initial={{height:0,opacity:0}} animate={{height:'auto',opacity:1}} exit={{height:0,opacity:0}} transition={{duration:0.25}} style={{overflow:'hidden'}}>
+                      {group.items.map(item => (
+                        <motion.button key={item.term+item.en}
+                          onClick={()=>onNavigate(item.stage,item.sub)}
+                          whileHover={{background:'rgba(100,255,218,0.04)',x:4}}
+                          style={{display:'block',width:'100%',padding:'10px 24px 10px 40px',
+                            background:'none',border:'none',cursor:'pointer',textAlign:'left'}}>
+                          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
+                            <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:600,color:'var(--text-primary)'}}>{item.term}</span>
+                            <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)',padding:'1px 6px',background:'var(--bg-card)',borderRadius:4}}>{item.en}</span>
+                            <span style={{marginLeft:'auto',fontSize:12,color:'var(--text-muted)',opacity:0.4}}>→</span>
+                          </div>
+                          <div style={{fontSize:11,color:'var(--text-muted)',lineHeight:1.5}}>{item.def}</div>
+                        </motion.button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
 /* ========== STAGE: COVER ========== */
 function StageCover() {
   return (
@@ -332,6 +481,7 @@ function Stage2() {
           {SAMPLE_TEXTS.map(s=>(<button key={s.text} onClick={()=>setInput(s.text)}
             style={{padding:'6px 14px',fontSize:12,fontFamily:'var(--font-mono)',background:input===s.text?'rgba(100,255,218,0.1)':'transparent',border:`1px solid ${input===s.text?'var(--border-active)':'var(--border-subtle)'}`,borderRadius:6,color:input===s.text?'var(--accent-primary)':'var(--text-secondary)',cursor:'pointer'}}>{s.label}</button>))}
         </div>
+        <div id="tokenizer-demo" style={{position:'absolute',top:-40}}/>
         <label style={{display:'block',fontSize:13,color:'var(--text-muted)',marginBottom:8,fontFamily:'var(--font-mono)'}}>Tokenizer 演示 — 输入文字查看切分结果：</label>
         <input value={input} onChange={e=>setInput(e.target.value)}
           style={{width:'100%',padding:'12px 16px',fontSize:16,fontFamily:'var(--font-mono)',background:'var(--bg-deep)',border:'1px solid var(--border-subtle)',borderRadius:8,color:'var(--text-primary)',outline:'none',marginBottom:20}}/>
@@ -360,6 +510,7 @@ function Stage2() {
       </motion.div>
 
         <motion.div style={{marginTop:40}} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6,delay:0.3}}>
+        <div id="model-cards" style={{position:'absolute',top:-40}}/>
           <h3 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(15px,2vw,18px)',fontWeight:700,color:'var(--text-primary)',marginBottom:6,textAlign:'center'}}>主流基础模型的差异</h3>
           <p style={{fontSize:13,color:'var(--text-secondary)',lineHeight:1.7,marginBottom:24,textAlign:'center',maxWidth:600,margin:'0 auto 24px'}}>
             不同类型的模型在架构设计上存在根本差异——这决定了它们各自擅长什么。差异来源于<strong style={{color:'var(--accent-gold)'}}>训练目标</strong>和<strong style={{color:'var(--accent-gold)'}}>网络结构</strong>的不同选择。
@@ -1475,9 +1626,15 @@ function StageConclusion() {
 function App() {
   const { activeId, scrollToStage, STAGE_IDS } = useActiveStage();
   const progress = useScrollProgress();
+  const [glossaryOpen, setGlossaryOpen] = useState(false);
+  const glossaryNavigate = useGlossaryNavigate(() => setGlossaryOpen(false));
 
   return (
     <>
+      <GlossaryButton open={glossaryOpen} onClick={() => setGlossaryOpen(!glossaryOpen)} />
+      <AnimatePresence>
+        {glossaryOpen && <GlossaryPanel onClose={() => setGlossaryOpen(false)} onNavigate={glossaryNavigate} />}
+      </AnimatePresence>
       <NavIndicator activeId={activeId} stageIds={STAGE_IDS} onNavigate={scrollToStage} progress={progress}/>
       <main>
         <StageCover/>
