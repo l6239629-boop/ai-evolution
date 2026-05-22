@@ -48,7 +48,7 @@ styleSheet.textContent = cssVars;
 document.head.appendChild(styleSheet);
 
 /* ========== HOOKS ========== */
-const STAGE_IDS = ['stage-cover','stage-intro','stage-1','stage-2','stage-3','stage-4','stage-5','stage-6','stage-7','stage-8','stage-conclusion'];
+const STAGE_IDS = ['stage-cover','stage-intro','stage-1','stage-2','stage-3','stage-4','stage-5','stage-6','stage-7','stage-8','stage-agent-types','stage-conclusion'];
 
 function useActiveStage() {
   const [activeId, setActiveId] = useState('stage-cover');
@@ -95,7 +95,7 @@ function useScrollProgress() {
 const LABELS = {
   'stage-cover':'封面','stage-intro':'引言','stage-1':'LM','stage-2':'LLM',
   'stage-3':'对话','stage-4':'记忆','stage-5':'任务','stage-6':'工具',
-  'stage-7':'Agent','stage-8':'Skill','stage-conclusion':'结语'
+  'stage-7':'Agent','stage-8':'Skill','stage-agent-types':'分化','stage-conclusion':'结语'
 };
 
 function NavIndicator({ activeId, stageIds, onNavigate, progress }) {
@@ -1382,6 +1382,68 @@ function Stage8() {
   );
 }
 
+/* ========== STAGE: AGENT TYPES ========== */
+const agentTypes = [
+  {icon:'🖥️',name:'编码 Agent',models:'Cursor · Devin · GitHub Copilot · Claude Code · Codex',
+   tool:'IDE 操作 · 终端 · Git · 文件系统',skill:'代码审查 · 重构建议 · 测试生成 · 调试分析',
+   wf:'写 → 测 → 修循环',color:'var(--accent-primary)',desc:'垂直化：接入 IDE 和终端工具，Skill 聚焦代码质量，Workflow 需要迭代验证'},
+  {icon:'🔬',name:'研究 Agent',models:'OpenAI DeepResearch · Claude Research · Perplexity',
+   tool:'Web Search · 学术检索 · 文档解析',skill:'信息综合 · 引用整理 · 结论推演',
+   wf:'搜 → 读 → 综合 → 引用',color:'var(--accent-gold)',desc:'能力偏好：需要广度搜索+长文综合，选择推理能力强的模型'},
+  {icon:'💼',name:'通用 Agent',models:'ChatGPT · Claude · Manus',
+   tool:'通用工具集 · 多 API 接入',skill:'广泛覆盖 · 多领域适配 · 灵活切换',
+   wf:'动态路由 · 按需编排',color:'#ba68c8',desc:'覆盖面：工具和 Skill 广泛不深，Workflow 灵活路由而非固定流程'}
+];
+
+function StageAgentTypes() {
+  return (
+    <SectionWrapper id="stage-agent-types">
+      <div style={{marginBottom:32}}>
+        <span style={{display:'inline-block',fontFamily:'var(--font-mono)',fontSize:12,color:'var(--accent-primary)',letterSpacing:3,textTransform:'uppercase',marginBottom:16,padding:'4px 14px',border:'1px solid var(--border-active)',borderRadius:20}}>阶段 8.5</span>
+        <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>Agent 的分化</h2>
+        <p style={{fontSize:18,color:'var(--accent-gold)',fontWeight:500,marginBottom:16}}>为什么市面上有不同的 Agent 产品？</p>
+        <motion.div style={{display:'inline-block',padding:'12px 24px',background:'rgba(100,255,218,0.04)',border:'1px solid rgba(100,255,218,0.15)',borderRadius:12,marginBottom:20}}
+          initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}}>
+          <p style={{fontFamily:'var(--font-mono)',fontSize:14,color:'var(--text-secondary)',lineHeight:1.8}}>
+            Agent = <strong style={{color:'var(--accent-primary)'}}>System Prompt</strong> + <strong style={{color:'var(--accent-secondary)'}}>LLM</strong> + <strong style={{color:'var(--accent-gold)'}}>Tools</strong> + <strong style={{color:'#ba68c8'}}>Skills</strong> + <strong style={{color:'#ff7043'}}>Workflow</strong> + <strong style={{color:'#b388ff'}}>Memory</strong>
+          </p>
+        </motion.div>
+        <p style={{color:'var(--text-secondary)',lineHeight:1.8,maxWidth:680}}>相同的架构公式，不同的配置选择 = 完全不同的产品。三类主流 Agent 的核心差异就来自这 6 个组件的<strong style={{color:'var(--accent-gold)'}}>不同组合</strong>。</p>
+      </div>
+      <div style={{display:'flex',gap:20,flexWrap:'wrap',justifyContent:'center'}}>
+        {agentTypes.map((a,i)=>(
+          <motion.div key={i} initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.5,delay:i*0.15}}
+            style={{flex:'1 1 280px',maxWidth:340,background:'var(--bg-card)',border:`1px solid ${a.color}22`,borderRadius:16,padding:'24px 20px',textAlign:'center'}}
+            whileHover={{borderColor:a.color,boxShadow:`0 0 32px ${a.color}15`,y:-4}}>
+            <div style={{fontSize:36,marginBottom:8}}>{a.icon}</div>
+            <h3 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(15px,2vw,18px)',fontWeight:700,color:a.color,marginBottom:6}}>{a.name}</h3>
+            <p style={{fontSize:11,color:'var(--text-muted)',marginBottom:16,fontFamily:'var(--font-mono)',lineHeight:1.6}}>{a.models}</p>
+            <div style={{display:'flex',flexDirection:'column',gap:6,textAlign:'left'}}>
+              <div style={{padding:'8px 12px',background:'var(--bg-deep)',borderRadius:8,borderLeft:`3px solid ${a.color}`}}>
+                <span style={{fontSize:10,color:a.color,fontWeight:600,fontFamily:'var(--font-mono)',marginRight:6}}>Tool</span>
+                <span style={{fontSize:11,color:'var(--text-secondary)'}}>{a.tool}</span>
+              </div>
+              <div style={{padding:'8px 12px',background:'var(--bg-deep)',borderRadius:8,borderLeft:`3px solid ${a.color}`}}>
+                <span style={{fontSize:10,color:a.color,fontWeight:600,fontFamily:'var(--font-mono)',marginRight:6}}>Skill</span>
+                <span style={{fontSize:11,color:'var(--text-secondary)'}}>{a.skill}</span>
+              </div>
+              <div style={{padding:'8px 12px',background:'var(--bg-deep)',borderRadius:8,borderLeft:`3px solid ${a.color}`}}>
+                <span style={{fontSize:10,color:a.color,fontWeight:600,fontFamily:'var(--font-mono)',marginRight:6}}>WF</span>
+                <span style={{fontSize:11,color:'var(--text-secondary)'}}>{a.wf}</span>
+              </div>
+            </div>
+            <p style={{fontSize:11,color:'var(--text-muted)',lineHeight:1.7,marginTop:12,fontStyle:'italic'}}>{a.desc}</p>
+          </motion.div>
+        ))}
+      </div>
+      <motion.p style={{textAlign:'center',marginTop:32,fontSize:13,color:'var(--text-secondary)'}}
+        initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.6}}>
+        同一公式 · 不同配置 = 不同产品。选择 Tool 决定<strong style={{color:'var(--accent-gold)'}}>能做什么</strong>，选择 Skill 决定<strong style={{color:'#ba68c8'}}>做得多好</strong>，选择 Workflow 决定<strong style={{color:'#ff7043'}}>怎么做</strong>。
+      </motion.p>
+    </SectionWrapper>
+  );
+}
+
 /* ========== STAGE: CONCLUSION ========== */
 const threads=[{title:'提升理解能力',stages:'阶段 1 — 4',desc:'从预测字符到记住上下文，让模型学会「听懂」和「记住」',color:'var(--accent-primary)'},{title:'拓展行动边界',stages:'阶段 5 — 6',desc:'从纯文本对话到调用外部工具，让模型学会「做事」',color:'var(--accent-secondary)'},{title:'构建自主编排',stages:'阶段 7 — 8',desc:'从单步工具到多步工作流与技能匹配，让模型学会「规划」',color:'var(--accent-gold)'}];
 
@@ -1436,6 +1498,8 @@ function App() {
         <Stage7/>
         <StageConnector label="用户期望的输出形式多样化，需要灵活匹配" secondary="将不同的呈现能力封装为可复用的 Skill"/>
         <Stage8/>
+        <StageConnector label="同样的架构公式，不同的配置 = 不同的 Agent 产品" secondary="Tool · Skill · Workflow 的组合决定 Agent 方向"/>
+        <StageAgentTypes/>
         <StageConnector label="回顾全程：从预测到理解，从做事到规划"/>
         <StageConclusion/>
       </main>
