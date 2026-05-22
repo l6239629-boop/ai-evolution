@@ -851,7 +851,7 @@ function ChatBubble({role,text,delay}) {
   return (
     <motion.div style={{display:'flex',justifyContent:isUser?'flex-end':'flex-start'}}
       initial={{opacity:0,x:isUser?20:-20}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.4,delay}}>
-      <div style={{maxWidth:'70%',padding:'10px 16px',borderRadius:isUser?'12px 12px 4px 12px':'12px 12px 12px 4px',background:isUser?'rgba(79,195,247,0.12)':'rgba(100,255,218,0.08)',border:`1px solid ${isUser?'rgba(79,195,247,0.25)':'rgba(100,255,218,0.2)'}`,fontSize:14,fontFamily:'var(--font-sans)',color:'var(--text-primary)',whiteSpace:'nowrap'}}>
+      <div style={{maxWidth:'85%',overflow:'visible',padding:'10px 16px',borderRadius:isUser?'12px 12px 4px 12px':'12px 12px 12px 4px',background:isUser?'rgba(79,195,247,0.12)':'rgba(100,255,218,0.08)',border:`1px solid ${isUser?'rgba(79,195,247,0.25)':'rgba(100,255,218,0.2)'}`,fontSize:14,fontFamily:'var(--font-sans)',color:'var(--text-primary)',whiteSpace:'nowrap'}}>
         <span style={{fontSize:10,display:'block',marginBottom:2,color:isUser?'var(--accent-secondary)':'var(--accent-primary)',fontFamily:'var(--font-mono)'}}>{isUser?'用户':'LLM'}</span>{text}
       </div>
     </motion.div>
