@@ -21,13 +21,13 @@ const { motion, AnimatePresence } = Motion;
 /* ========== GLOBAL STYLES ========== */
 const cssVars = `
 :root {
-  --bg-deep: #f8f9fb; --bg-primary: #ffffff; --bg-card: #ffffff;
-  --bg-card-hover: #f0f3f8; --bg-elevated: #eef1f6;
-  --text-primary: #1a1a2e; --text-secondary: #5a6070; --text-muted: #9ca3b0;
-  --accent-primary: #0d7377; --accent-secondary: #3b82f6;
-  --accent-gold: #e67e22; --accent-warm: #f0a050; --accent-emerge: #e8b830;
-  --border-subtle: rgba(0,0,0,0.06); --border-active: rgba(13,115,119,0.25);
-  --glow-strong: 0 0 40px rgba(13,115,119,0.08); --glow-gold: 0 0 30px rgba(230,126,34,0.12);
+  --bg-deep: #ffffff; --bg-primary: #fafbfc; --bg-card: #fafbfc;
+  --bg-card-hover: #f0f2f5; --bg-elevated: #f0f2f5;
+  --text-primary: #1a1d26; --text-secondary: #5f6b7a; --text-muted: #98a2b3;
+  --accent-primary: #2d8cf0; --accent-secondary: #6c5ce7;
+  --accent-gold: #f59e0b; --accent-warm: #fbbf24; --accent-emerge: #fcd34d;
+  --border-subtle: rgba(0,0,0,0.08); --border-active: rgba(45,140,240,0.3);
+  --glow-strong: 0 0 40px rgba(45,140,240,0.1); --glow-gold: 0 0 30px rgba(245,158,11,0.15);
   --font-mono: 'JetBrains Mono','Fira Code',monospace;
   --font-sans: 'Noto Sans SC',-apple-system,sans-serif;
 }
@@ -37,8 +37,8 @@ body{font-family:var(--font-sans);background:var(--bg-deep);color:var(--text-pri
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:var(--bg-deep)}
 ::-webkit-scrollbar-thumb{background:var(--border-active);border-radius:3px}
-::selection{background:rgba(13,115,119,0.15);color:var(--accent-primary)}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(13,115,119,0.03) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 40%,rgba(13,115,119,0.02) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 20% 70%,rgba(230,126,34,0.02) 0%,transparent 50%);pointer-events:none;z-index:0}
+::selection{background:rgba(45,140,240,0.15);color:var(--accent-primary)}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(45,140,240,0.02) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 40%,rgba(108,92,231,0.02) 0%,transparent 50%),radial-gradient(ellipse 50% 40% at 20% 70%,rgba(245,158,11,0.02) 0%,transparent 50%);pointer-events:none;z-index:0}
 body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}@media(max-width:640px){section{grid-template-columns:1fr!important;padding:40px 20px!important}}
 #root{position:relative;z-index:1}
 `;
@@ -100,7 +100,7 @@ function useGlossaryNavigate(onClose) {
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         el.style.transition = 'box-shadow 0.3s';
-        el.style.boxShadow = '0 0 40px rgba(230,126,34,0.5)';
+        el.style.boxShadow = '0 0 40px rgba(245,158,11,0.5)';
         setTimeout(() => { el.style.boxShadow = ''; }, 1500);
       }
     }, 350);
@@ -163,7 +163,7 @@ function NavIndicator({ activeId, stageIds, onNavigate, progress }) {
           <motion.button key={id} onClick={() => onNavigate(id)} title={LABELS[id]||id}
             style={{width:12,height:12,borderRadius:'50%',border:'none',cursor:'pointer',
               background:isActive?'var(--accent-primary)':'var(--text-muted)',
-              boxShadow:isActive?'0 0 12px rgba(13,115,119,0.5)':'none',
+              boxShadow:isActive?'0 0 12px rgba(45,140,240,0.5)':'none',
               position:'relative',zIndex:1,flexShrink:0,
               transition:'background 0.3s,box-shadow 0.3s'}}
             whileHover={{scale:1.4}} whileTap={{scale:0.9}}>
@@ -197,7 +197,7 @@ function StageConnector({ label, secondary }) {
         <div style={{position:'relative',width:2,height:48}}>
           <motion.div style={{width:2,height:'100%',background:'linear-gradient(to bottom,var(--accent-primary),var(--accent-gold))',transformOrigin:'top'}}
             initial={{scaleY:0}} whileInView={{scaleY:1}} viewport={{once:true}} transition={{duration:0.8,delay:0.2}}/>
-          <motion.div style={{position:'absolute',left:'50%',marginLeft:-4,width:8,height:8,borderRadius:'50%',background:'var(--accent-gold)',boxShadow:'0 0 12px rgba(230,126,34,0.6)'}}
+          <motion.div style={{position:'absolute',left:'50%',marginLeft:-4,width:8,height:8,borderRadius:'50%',background:'var(--accent-gold)',boxShadow:'0 0 12px rgba(245,158,11,0.6)'}}
             animate={{top:['0%','90%']}} transition={{duration:2,repeat:Infinity,ease:'easeInOut'}}/>
         </div>
         <motion.div style={{width:0,height:0,borderLeft:'7px solid transparent',borderRight:'7px solid transparent',borderTop:'8px solid var(--accent-gold)',marginTop:-4}}
@@ -226,9 +226,9 @@ function GlossaryButton({ open, onClick }) {
     <motion.button onClick={onClick} title="术语词典"
       style={{position:'fixed',left:28,top:'50%',transform:'translateY(-50%)',zIndex:99,
         width:40,height:40,borderRadius:'50%',border:'1px solid var(--border-subtle)',
-        background:open?'rgba(13,115,119,0.1)':'var(--bg-card)',cursor:'pointer',
+        background:open?'rgba(45,140,240,0.1)':'var(--bg-card)',cursor:'pointer',
         display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,color:'var(--text-primary)'}}
-      whileHover={{scale:1.1,boxShadow:'0 0 20px rgba(13,115,119,0.25)',borderColor:'var(--accent-primary)'}}
+      whileHover={{scale:1.1,boxShadow:'0 0 20px rgba(45,140,240,0.25)',borderColor:'var(--accent-primary)'}}
       whileTap={{scale:0.9}}>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
@@ -283,7 +283,7 @@ function GlossaryPanel({ onClose, onNavigate }) {
                   style={{display:'flex',alignItems:'center',gap:8,width:'100%',padding:'12px 24px',
                     background:'none',border:'none',cursor:'pointer',color:'var(--accent-primary)',
                     fontFamily:'var(--font-sans)',fontSize:13,fontWeight:600,textAlign:'left'}}
-                  whileHover={{background:'rgba(13,115,119,0.03)'}}>
+                  whileHover={{background:'rgba(45,140,240,0.03)'}}>
                   <motion.span animate={{rotate:isCollapsed?-90:0}} transition={{duration:0.2}} style={{fontSize:10,display:'inline-block'}}>▼</motion.span>
                   <span>{group.name}</span>
                   <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)',marginLeft:'auto'}}>{group.items.length}</span>
@@ -294,7 +294,7 @@ function GlossaryPanel({ onClose, onNavigate }) {
                       {group.items.map(item => (
                         <motion.button key={item.term+item.en}
                           onClick={()=>onNavigate(item.stage,item.sub)}
-                          whileHover={{background:'rgba(13,115,119,0.04)',x:4}}
+                          whileHover={{background:'rgba(45,140,240,0.04)',x:4}}
                           style={{display:'block',width:'100%',padding:'10px 24px 10px 40px',
                             background:'none',border:'none',cursor:'pointer',textAlign:'left'}}>
                           <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:3}}>
@@ -320,7 +320,7 @@ function GlossaryPanel({ onClose, onNavigate }) {
 function StageCover() {
   return (
     <section id="stage-cover" style={{minHeight:'100vh',display:'flex',flexDirection:'column',justifyContent:'center',alignItems:'center',padding:'60px 40px',textAlign:'center',position:'relative'}}>
-      <motion.div style={{position:'absolute',width:500,height:500,borderRadius:'50%',background:'radial-gradient(circle,rgba(13,115,119,0.06) 0%,transparent 70%)',top:'50%',left:'50%',transform:'translate(-50%,-50%)',pointerEvents:'none'}}
+      <motion.div style={{position:'absolute',width:500,height:500,borderRadius:'50%',background:'radial-gradient(circle,rgba(45,140,240,0.06) 0%,transparent 70%)',top:'50%',left:'50%',transform:'translate(-50%,-50%)',pointerEvents:'none'}}
         animate={{scale:[1,1.15,1],opacity:[0.5,0.8,0.5]}} transition={{duration:6,repeat:Infinity,ease:'easeInOut'}}/>
       <motion.p style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--accent-primary)',letterSpacing:6,textTransform:'uppercase',marginBottom:24}}
         initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.8,delay:0.2}}>
@@ -435,10 +435,10 @@ function Stage1() {
             ))}
           </div>
         </div>
-        <motion.div style={{marginTop:20,padding:'14px 20px',background:'rgba(13,115,119,0.06)',borderRadius:8,border:'1px solid var(--border-active)',display:'flex',alignItems:'center',gap:10,fontFamily:'var(--font-mono)',fontSize:16}}
+        <motion.div style={{marginTop:20,padding:'14px 20px',background:'rgba(45,140,240,0.06)',borderRadius:8,border:'1px solid var(--border-active)',display:'flex',alignItems:'center',gap:10,fontFamily:'var(--font-mono)',fontSize:16}}
           initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.8}}>
           <span style={{color:'var(--text-secondary)'}}>{input}</span>
-          <motion.span style={{color:'var(--accent-primary)',fontWeight:700,fontSize:20,padding:'2px 10px',background:'rgba(13,115,119,0.1)',borderRadius:6}}
+          <motion.span style={{color:'var(--accent-primary)',fontWeight:700,fontSize:20,padding:'2px 10px',background:'rgba(45,140,240,0.1)',borderRadius:6}}
             animate={{scale:[1,1.08,1]}} transition={{duration:2,repeat:Infinity}}>{predictions[0]?.char||'?'}</motion.span>
           <span style={{color:'var(--text-muted)',fontSize:12}}>← 概率最高的预测结果</span>
         </motion.div>
@@ -479,7 +479,7 @@ function Stage2() {
         initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.6,delay:0.2}}>
         <div style={{display:'flex',gap:8,marginBottom:20,flexWrap:'wrap'}}>
           {SAMPLE_TEXTS.map(s=>(<button key={s.text} onClick={()=>setInput(s.text)}
-            style={{padding:'6px 14px',fontSize:12,fontFamily:'var(--font-mono)',background:input===s.text?'rgba(13,115,119,0.1)':'transparent',border:`1px solid ${input===s.text?'var(--border-active)':'var(--border-subtle)'}`,borderRadius:6,color:input===s.text?'var(--accent-primary)':'var(--text-secondary)',cursor:'pointer'}}>{s.label}</button>))}
+            style={{padding:'6px 14px',fontSize:12,fontFamily:'var(--font-mono)',background:input===s.text?'rgba(45,140,240,0.1)':'transparent',border:`1px solid ${input===s.text?'var(--border-active)':'var(--border-subtle)'}`,borderRadius:6,color:input===s.text?'var(--accent-primary)':'var(--text-secondary)',cursor:'pointer'}}>{s.label}</button>))}
         </div>
         <div id="tokenizer-demo" style={{position:'absolute',top:-40}}/>
         <label style={{display:'block',fontSize:13,color:'var(--text-muted)',marginBottom:8,fontFamily:'var(--font-mono)'}}>Tokenizer 演示 — 输入文字查看切分结果：</label>
@@ -498,7 +498,7 @@ function Stage2() {
             </AnimatePresence>
           </div>
         </div>
-        <motion.div style={{padding:'14px 20px',background:'rgba(59,130,246,0.06)',borderRadius:8,border:'1px solid rgba(59,130,246,0.2)',display:'flex',alignItems:'center',gap:16,fontFamily:'var(--font-mono)',fontSize:13}}
+        <motion.div style={{padding:'14px 20px',background:'rgba(108,92,231,0.06)',borderRadius:8,border:'1px solid rgba(108,92,231,0.2)',display:'flex',alignItems:'center',gap:16,fontFamily:'var(--font-mono)',fontSize:13}}
           initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.5}}>
           <div><span style={{color:'var(--text-muted)'}}>字符数：</span><span style={{color:'var(--text-primary)',whiteSpace:'nowrap'}}>{input.length}</span></div>
           <div style={{width:1,height:20,background:'var(--border-subtle)'}}/>
@@ -517,80 +517,80 @@ function Stage2() {
           </p>
           <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:20}}>
             {/* 通用对话模型 */}
-            <motion.div style={{background:'var(--bg-deep)',border:'1px solid rgba(13,115,119,0.15)',borderRadius:14,textAlign:'center',overflow:'hidden',position:'relative'}}
-              whileHover={{borderColor:'var(--accent-primary)',boxShadow:'0 0 30px rgba(13,115,119,0.15)',y:-3}}>
+            <motion.div style={{background:'var(--bg-deep)',border:'1px solid rgba(45,140,240,0.15)',borderRadius:14,textAlign:'center',overflow:'hidden',position:'relative'}}
+              whileHover={{borderColor:'var(--accent-primary)',boxShadow:'0 0 30px rgba(45,140,240,0.15)',y:-3}}>
               <div style={{height:3,background:'#64ffda',width:'100%'}}/>
               <div style={{padding:'20px 20px 0'}}>
               <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',letterSpacing:2,marginBottom:10,textTransform:'uppercase'}}>💬 通用对话模型</div>
               <svg width="100%" height="130" viewBox="0 0 280 130" style={{maxWidth:340,margin:'10px auto 6px'}}>
                 <defs>
-                  <linearGradient id="pipe-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#0d7377" stopOpacity="0.12"/><stop offset="100%" stopColor="#0d7377" stopOpacity="0.45"/></linearGradient>
+                  <linearGradient id="pipe-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#2d8cf0" stopOpacity="0.12"/><stop offset="100%" stopColor="#2d8cf0" stopOpacity="0.45"/></linearGradient>
                 </defs>
                 {/* 背景管道 */}
                 <rect x="18" y="41" width="236" height="4" rx="2" fill="url(#pipe-grad)"/>
                 {/* 预训练 */}
-                <motion.rect x="20" y="28" width="56" height="30" rx="7" fill="rgba(13,115,119,0.1)" stroke="#0d7377" strokeWidth="1.5"
-                  initial={{opacity:0}} whileInView={{opacity:1}} whileHover={{boxShadow:'0 0 14px rgba(13,115,119,0.3)'}}/>
-                <text x="48" y="41" textAnchor="middle" fill="#0d7377" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">预训练</text>
-                <text x="48" y="52" textAnchor="middle" fill="rgba(13,115,119,0.55)" fontSize="8" fontFamily="var(--font-mono)">文本+代码</text>
+                <motion.rect x="20" y="28" width="56" height="30" rx="7" fill="rgba(45,140,240,0.1)" stroke="#2d8cf0" strokeWidth="1.5"
+                  initial={{opacity:0}} whileInView={{opacity:1}} whileHover={{boxShadow:'0 0 14px rgba(45,140,240,0.3)'}}/>
+                <text x="48" y="41" textAnchor="middle" fill="#2d8cf0" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">预训练</text>
+                <text x="48" y="52" textAnchor="middle" fill="rgba(45,140,240,0.55)" fontSize="8" fontFamily="var(--font-mono)">文本+代码</text>
                 {/* RLHF */}
-                <motion.rect x="108" y="28" width="56" height="30" rx="7" fill="rgba(13,115,119,0.1)" stroke="#0d7377" strokeWidth="1.5"
-                  initial={{opacity:0}} whileInView={{opacity:1}} whileHover={{boxShadow:'0 0 14px rgba(13,115,119,0.3)'}}/>
-                <text x="136" y="41" textAnchor="middle" fill="#0d7377" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">RLHF</text>
-                <text x="136" y="52" textAnchor="middle" fill="rgba(13,115,119,0.55)" fontSize="8" fontFamily="var(--font-mono)">人类反馈</text>
+                <motion.rect x="108" y="28" width="56" height="30" rx="7" fill="rgba(45,140,240,0.1)" stroke="#2d8cf0" strokeWidth="1.5"
+                  initial={{opacity:0}} whileInView={{opacity:1}} whileHover={{boxShadow:'0 0 14px rgba(45,140,240,0.3)'}}/>
+                <text x="136" y="41" textAnchor="middle" fill="#2d8cf0" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">RLHF</text>
+                <text x="136" y="52" textAnchor="middle" fill="rgba(45,140,240,0.55)" fontSize="8" fontFamily="var(--font-mono)">人类反馈</text>
                 {/* 助手 */}
-                <motion.rect x="196" y="28" width="56" height="30" rx="7" fill="rgba(13,115,119,0.1)" stroke="#0d7377" strokeWidth="1.5"
-                  initial={{opacity:0}} whileInView={{opacity:1}} whileHover={{boxShadow:'0 0 14px rgba(13,115,119,0.3)'}}/>
-                <text x="224" y="41" textAnchor="middle" fill="#0d7377" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">助手</text>
-                <text x="224" y="52" textAnchor="middle" fill="rgba(13,115,119,0.55)" fontSize="8" fontFamily="var(--font-mono)">对话</text>
+                <motion.rect x="196" y="28" width="56" height="30" rx="7" fill="rgba(45,140,240,0.1)" stroke="#2d8cf0" strokeWidth="1.5"
+                  initial={{opacity:0}} whileInView={{opacity:1}} whileHover={{boxShadow:'0 0 14px rgba(45,140,240,0.3)'}}/>
+                <text x="224" y="41" textAnchor="middle" fill="#2d8cf0" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">助手</text>
+                <text x="224" y="52" textAnchor="middle" fill="rgba(45,140,240,0.55)" fontSize="8" fontFamily="var(--font-mono)">对话</text>
                 {/* 流动粒子 — 全部 cy=58 对齐管道中心 */}
-                <motion.circle r="3" cy="43" fill="#0d7377" initial={{cx:24}} animate={{cx:250}} transition={{duration:4,repeat:Infinity,ease:'linear'}}/>
-                <motion.circle r="2" cy="43" fill="rgba(13,115,119,0.6)" initial={{cx:55}} animate={{cx:250}} transition={{duration:4,repeat:Infinity,ease:'linear',delay:1.3}}/>
-                <motion.circle r="2.5" cy="43" fill="rgba(13,115,119,0.5)" initial={{cx:85}} animate={{cx:250}} transition={{duration:4,repeat:Infinity,ease:'linear',delay:2.7}}/>
+                <motion.circle r="3" cy="43" fill="#2d8cf0" initial={{cx:24}} animate={{cx:250}} transition={{duration:4,repeat:Infinity,ease:'linear'}}/>
+                <motion.circle r="2" cy="43" fill="rgba(45,140,240,0.6)" initial={{cx:55}} animate={{cx:250}} transition={{duration:4,repeat:Infinity,ease:'linear',delay:1.3}}/>
+                <motion.circle r="2.5" cy="43" fill="rgba(45,140,240,0.5)" initial={{cx:85}} animate={{cx:250}} transition={{duration:4,repeat:Infinity,ease:'linear',delay:2.7}}/>
                 {/* 分隔线 */}
-                <line x1="10" y1="74" x2="270" y2="74" stroke="rgba(13,115,119,0.12)" strokeWidth="1"/>
-                <text x="140" y="90" textAnchor="middle" fill="rgba(13,115,119,0.55)" fontSize="9" fontFamily="var(--font-sans)">广而不深：RLHF 教它说好话，但没教它检查自己的推理过程</text>
+                <line x1="10" y1="74" x2="270" y2="74" stroke="rgba(45,140,240,0.12)" strokeWidth="1"/>
+                <text x="140" y="90" textAnchor="middle" fill="rgba(45,140,240,0.55)" fontSize="9" fontFamily="var(--font-sans)">广而不深：RLHF 教它说好话，但没教它检查自己的推理过程</text>
               </svg>
               <div style={{display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'3px 8px',marginTop:0}}>
                 {['OpenAI GPT-4o','Anthropic Claude 4','Google Gemini 2.5 Pro','DeepSeek-V3','Meta Llama 4','阿里 Qwen3','Mistral Large'].map((m,i)=>(
-                  <span key={i} style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',background:'rgba(13,115,119,0.04)',padding:'2px 7px',borderRadius:20}}>{m}</span>
+                  <span key={i} style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',background:'rgba(45,140,240,0.04)',padding:'2px 7px',borderRadius:20}}>{m}</span>
                 ))}
               </div>
               </div>
             </motion.div>
 
             {/* 推理模型 */}
-            <motion.div style={{background:'var(--bg-deep)',border:'1px solid rgba(230,126,34,0.15)',borderRadius:14,textAlign:'center',overflow:'hidden',position:'relative'}}
-              whileHover={{borderColor:'var(--accent-gold)',boxShadow:'0 0 30px rgba(230,126,34,0.15)',y:-3}}>
+            <motion.div style={{background:'var(--bg-deep)',border:'1px solid rgba(245,158,11,0.15)',borderRadius:14,textAlign:'center',overflow:'hidden',position:'relative'}}
+              whileHover={{borderColor:'var(--accent-gold)',boxShadow:'0 0 30px rgba(245,158,11,0.15)',y:-3}}>
               <div style={{height:3,background:'#ffb74d',width:'100%'}}/>
               <div style={{padding:'20px 20px 0'}}>
               <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-gold)',letterSpacing:2,marginBottom:10,textTransform:'uppercase'}}>🧠 推理模型</div>
               <svg width="100%" height="130" viewBox="0 0 280 130" style={{maxWidth:340,margin:'10px auto 6px'}}>
                 {/* 通用模型 */}
-                <motion.rect x="14" y="30" width="48" height="26" rx="6" fill="rgba(230,126,34,0.08)" stroke="#e67e22" strokeWidth="1.2"
+                <motion.rect x="14" y="30" width="48" height="26" rx="6" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" strokeWidth="1.2"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="38" y="46" textAnchor="middle" fill="#e67e22" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">通用模型</text>
+                <text x="38" y="46" textAnchor="middle" fill="#f59e0b" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">通用模型</text>
                 {/* 思维链 RL */}
-                <motion.rect x="96" y="14" width="72" height="54" rx="8" fill="rgba(230,126,34,0.1)" stroke="#e67e22" strokeWidth="1.5"
+                <motion.rect x="96" y="14" width="72" height="54" rx="8" fill="rgba(245,158,11,0.1)" stroke="#f59e0b" strokeWidth="1.5"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="132" y="30" textAnchor="middle" fill="#e67e22" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">思维链 RL</text>
-                <text x="132" y="44" textAnchor="middle" fill="rgba(230,126,34,0.6)" fontSize="8" fontFamily="var(--font-mono)">思考→检查</text>
-                <text x="132" y="57" textAnchor="middle" fill="rgba(230,126,34,0.6)" fontSize="8" fontFamily="var(--font-mono)">→修正→输出</text>
+                <text x="132" y="30" textAnchor="middle" fill="#f59e0b" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">思维链 RL</text>
+                <text x="132" y="44" textAnchor="middle" fill="rgba(245,158,11,0.6)" fontSize="8" fontFamily="var(--font-mono)">思考→检查</text>
+                <text x="132" y="57" textAnchor="middle" fill="rgba(245,158,11,0.6)" fontSize="8" fontFamily="var(--font-mono)">→修正→输出</text>
                 {/* 旋转光圈 — 原生 SVG animateTransform */}
-                <circle cx="132" cy="41" r="40" fill="none" stroke="#e67e22" strokeWidth="1.5" strokeDasharray="5 4" opacity="0.7">
+                <circle cx="132" cy="41" r="40" fill="none" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="5 4" opacity="0.7">
                   <animateTransform attributeName="transform" type="rotate" from="0 132 41" to="360 132 41" dur="5s" repeatCount="indefinite"/>
                 </circle>
                 {/* 推理专家 */}
-                <motion.rect x="200" y="30" width="56" height="26" rx="6" fill="rgba(230,126,34,0.08)" stroke="#e67e22" strokeWidth="1.2"
+                <motion.rect x="200" y="30" width="56" height="26" rx="6" fill="rgba(245,158,11,0.08)" stroke="#f59e0b" strokeWidth="1.2"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="228" y="46" textAnchor="middle" fill="#e67e22" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">推理专家</text>
+                <text x="228" y="46" textAnchor="middle" fill="#f59e0b" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">推理专家</text>
                 {/* 分隔线 */}
-                <line x1="10" y1="78" x2="270" y2="78" stroke="rgba(230,126,34,0.12)" strokeWidth="1"/>
-                <text x="140" y="94" textAnchor="middle" fill="rgba(230,126,34,0.55)" fontSize="9" fontFamily="var(--font-sans)">慢但准：每个回答先生成思考链，token 消耗大、响应慢</text>
+                <line x1="10" y1="78" x2="270" y2="78" stroke="rgba(245,158,11,0.12)" strokeWidth="1"/>
+                <text x="140" y="94" textAnchor="middle" fill="rgba(245,158,11,0.55)" fontSize="9" fontFamily="var(--font-sans)">慢但准：每个回答先生成思考链，token 消耗大、响应慢</text>
               </svg>
               <div style={{display:'flex',flexWrap:'wrap',justifyContent:'center',gap:'3px 8px',marginTop:0}}>
                 {['OpenAI o3/o4-mini','DeepSeek-R1','阿里 QwQ-32B','Google Gemini Thinking'].map((m,i)=>(
-                  <span key={i} style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',background:'rgba(230,126,34,0.04)',padding:'2px 7px',borderRadius:20}}>{m}</span>
+                  <span key={i} style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',background:'rgba(245,158,11,0.04)',padding:'2px 7px',borderRadius:20}}>{m}</span>
                 ))}
               </div>
               </div>
@@ -604,42 +604,42 @@ function Stage2() {
               <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'#ba68c8',letterSpacing:2,marginBottom:10,textTransform:'uppercase'}}>👁️ 多模态模型</div>
               <svg width="100%" height="130" viewBox="0 0 280 130" style={{maxWidth:340,margin:'10px auto 6px'}}>
                 <defs>
-                  <radialGradient id="ripple"><stop offset="0%" stopColor="#8e44ad" stopOpacity="0.4"/><stop offset="100%" stopColor="#8e44ad" stopOpacity="0"/></radialGradient>
+                  <radialGradient id="ripple"><stop offset="0%" stopColor="#7c3aed" stopOpacity="0.4"/><stop offset="100%" stopColor="#7c3aed" stopOpacity="0"/></radialGradient>
                 </defs>
                 {/* 图像输入 */}
-                <motion.rect x="14" y="6" width="40" height="22" rx="5" fill="rgba(186,104,200,0.08)" stroke="#8e44ad" strokeWidth="1.3"
+                <motion.rect x="14" y="6" width="40" height="22" rx="5" fill="rgba(186,104,200,0.08)" stroke="#7c3aed" strokeWidth="1.3"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="34" y="20" textAnchor="middle" fill="#8e44ad" fontSize="10" fontFamily="var(--font-mono)">🖼️ 图像</text>
+                <text x="34" y="20" textAnchor="middle" fill="#7c3aed" fontSize="10" fontFamily="var(--font-mono)">🖼️ 图像</text>
                 {/* 文字输入 */}
-                <motion.rect x="14" y="64" width="40" height="22" rx="5" fill="rgba(186,104,200,0.08)" stroke="#8e44ad" strokeWidth="1.3"
+                <motion.rect x="14" y="64" width="40" height="22" rx="5" fill="rgba(186,104,200,0.08)" stroke="#7c3aed" strokeWidth="1.3"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="34" y="78" textAnchor="middle" fill="#8e44ad" fontSize="10" fontFamily="var(--font-mono)">📝 文字</text>
+                <text x="34" y="78" textAnchor="middle" fill="#7c3aed" fontSize="10" fontFamily="var(--font-mono)">📝 文字</text>
                 {/* 视觉编码 */}
-                <motion.rect x="62" y="4" width="48" height="24" rx="6" fill="rgba(186,104,200,0.09)" stroke="#8e44ad" strokeWidth="1.3"
+                <motion.rect x="62" y="4" width="48" height="24" rx="6" fill="rgba(186,104,200,0.09)" stroke="#7c3aed" strokeWidth="1.3"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="86" y="19" textAnchor="middle" fill="#8e44ad" fontSize="9" fontFamily="var(--font-mono)">视觉编码</text>
+                <text x="86" y="19" textAnchor="middle" fill="#7c3aed" fontSize="9" fontFamily="var(--font-mono)">视觉编码</text>
                 {/* Token化 */}
-                <motion.rect x="62" y="62" width="48" height="24" rx="6" fill="rgba(186,104,200,0.09)" stroke="#8e44ad" strokeWidth="1.3"
+                <motion.rect x="62" y="62" width="48" height="24" rx="6" fill="rgba(186,104,200,0.09)" stroke="#7c3aed" strokeWidth="1.3"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="86" y="77" textAnchor="middle" fill="#8e44ad" fontSize="9" fontFamily="var(--font-mono)">Token化</text>
+                <text x="86" y="77" textAnchor="middle" fill="#7c3aed" fontSize="9" fontFamily="var(--font-mono)">Token化</text>
                 {/* 汇入线 */}
-                <motion.path d="M113 16 L142 38" stroke="#8e44ad" strokeWidth="1.5" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.6,delay:0.2}}/>
-                <motion.path d="M113 74 L142 52" stroke="#8e44ad" strokeWidth="1.5" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.6,delay:0.3}}/>
+                <motion.path d="M113 16 L142 38" stroke="#7c3aed" strokeWidth="1.5" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.6,delay:0.2}}/>
+                <motion.path d="M113 74 L142 52" stroke="#7c3aed" strokeWidth="1.5" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.6,delay:0.3}}/>
                 {/* LLM 融合 */}
-                <motion.rect x="145" y="27" width="52" height="36" rx="8" fill="rgba(186,104,200,0.13)" stroke="#8e44ad" strokeWidth="1.5"
+                <motion.rect x="145" y="27" width="52" height="36" rx="8" fill="rgba(186,104,200,0.13)" stroke="#7c3aed" strokeWidth="1.5"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="171" y="43" textAnchor="middle" fill="#8e44ad" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">LLM</text>
+                <text x="171" y="43" textAnchor="middle" fill="#7c3aed" fontSize="10" fontFamily="var(--font-mono)" fontWeight="600">LLM</text>
                 <text x="171" y="55" textAnchor="middle" fill="rgba(186,104,200,0.6)" fontSize="8" fontFamily="var(--font-mono)">融合理解</text>
                 {/* 波纹 */}
-                <circle cx="142" cy="45" r="8" fill="none" stroke="#8e44ad" strokeWidth="1" opacity="0">
+                <circle cx="142" cy="45" r="8" fill="none" stroke="#7c3aed" strokeWidth="1" opacity="0">
                   <animate attributeName="r" values="8;20" dur="2s" repeatCount="indefinite"/>
                   <animate attributeName="opacity" values="0.6;0" dur="2s" repeatCount="indefinite"/>
                 </circle>
                 {/* 输出 */}
-                <motion.path d="M200 45 L216 45" stroke="#8e44ad" strokeWidth="1.5" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.5,delay:0.4}}/>
-                <motion.rect x="220" y="29" width="40" height="32" rx="7" fill="rgba(186,104,200,0.08)" stroke="#8e44ad" strokeWidth="1.3"
+                <motion.path d="M200 45 L216 45" stroke="#7c3aed" strokeWidth="1.5" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.5,delay:0.4}}/>
+                <motion.rect x="220" y="29" width="40" height="32" rx="7" fill="rgba(186,104,200,0.08)" stroke="#7c3aed" strokeWidth="1.3"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="240" y="49" textAnchor="middle" fill="#8e44ad" fontSize="12" fontFamily="var(--font-mono)">💬</text>
+                <text x="240" y="49" textAnchor="middle" fill="#7c3aed" fontSize="12" fontFamily="var(--font-mono)">💬</text>
                 {/* 分隔线 */}
                 <line x1="10" y1="86" x2="270" y2="86" stroke="rgba(186,104,200,0.12)" strokeWidth="1"/>
                 <text x="140" y="102" textAnchor="middle" fill="rgba(186,104,200,0.55)" fontSize="9" fontFamily="var(--font-sans)">能看不能画：视觉理解 ≠ 视觉生成，后者需要额外扩散模型</text>
@@ -660,40 +660,40 @@ function Stage2() {
               <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'#81c784',letterSpacing:2,marginBottom:10,textTransform:'uppercase'}}>🔀 MoE 混合专家架构</div>
               <svg width="100%" height="130" viewBox="0 0 280 130" style={{maxWidth:340,margin:'10px auto 6px'}}>
                 {/* Token 输入 */}
-                <motion.rect x="14" y="38" width="36" height="22" rx="5" fill="rgba(129,199,132,0.08)" stroke="#4caf50" strokeWidth="1.3"
+                <motion.rect x="14" y="38" width="36" height="22" rx="5" fill="rgba(129,199,132,0.08)" stroke="#10b981" strokeWidth="1.3"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="32" y="52" textAnchor="middle" fill="#4caf50" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">Token</text>
+                <text x="32" y="52" textAnchor="middle" fill="#10b981" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">Token</text>
                 {/* 路由器 */}
-                <motion.polygon points="62,22 48,49 62,76" fill="none" stroke="#4caf50" strokeWidth="1.3"
+                <motion.polygon points="62,22 48,49 62,76" fill="none" stroke="#10b981" strokeWidth="1.3"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="56" y="51" textAnchor="middle" fill="#4caf50" fontSize="8" fontFamily="var(--font-mono)">🎯路由</text>
+                <text x="56" y="51" textAnchor="middle" fill="#10b981" fontSize="8" fontFamily="var(--font-mono)">🎯路由</text>
                 {/* 专家 */}
                 {[{y:6,label:'数学专家',active:true},{y:36,label:'代码专家',active:true},{y:66,label:'语言专家',active:false}].map((e,i)=>(<g key={i}>
                   <motion.rect x="86" y={e.y} width="48" height="22" rx="5"
                     fill={e.active?"rgba(129,199,132,0.15)":"rgba(129,199,132,0.03)"}
-                    stroke={e.active?"#4caf50":"rgba(129,199,132,0.25)"} strokeWidth="1.3"
+                    stroke={e.active?"#10b981":"rgba(129,199,132,0.25)"} strokeWidth="1.3"
                     initial={{opacity:0}} whileInView={{opacity:e.active?1:0.4}}/>
-                  <text x="110" y={e.y+15} textAnchor="middle" fill={e.active?"#4caf50":"rgba(129,199,132,0.3)"} fontSize="9" fontFamily="var(--font-mono)" fontWeight={e.active?600:400}>{e.label}</text>
+                  <text x="110" y={e.y+15} textAnchor="middle" fill={e.active?"#10b981":"rgba(129,199,132,0.3)"} fontSize="9" fontFamily="var(--font-mono)" fontWeight={e.active?600:400}>{e.label}</text>
                 </g>))}
                 {/* 连线 — 原生 SVG animate 循环高亮 */}
-                <line x1="62" y1="17" x2="86" y2="17" stroke="#4caf50" strokeWidth="1.3" strokeDasharray="3 2">
+                <line x1="62" y1="17" x2="86" y2="17" stroke="#10b981" strokeWidth="1.3" strokeDasharray="3 2">
                   <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/>
                 </line>
-                <line x1="62" y1="47" x2="86" y2="47" stroke="#4caf50" strokeWidth="1.3" strokeDasharray="3 2">
+                <line x1="62" y1="47" x2="86" y2="47" stroke="#10b981" strokeWidth="1.3" strokeDasharray="3 2">
                   <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" begin="0.8s" repeatCount="indefinite"/>
                 </line>
                 <line x1="62" y1="77" x2="86" y2="77" stroke="rgba(129,199,132,0.2)" strokeWidth="1.3" strokeDasharray="3 2">
                   <animate attributeName="opacity" values="0.15;0.3;0.15" dur="2.5s" begin="0.4s" repeatCount="indefinite"/>
                 </line>
                 {/* 聚合 */}
-                <motion.rect x="158" y="37" width="30" height="26" rx="6" fill="rgba(129,199,132,0.1)" stroke="#4caf50" strokeWidth="1.3"
+                <motion.rect x="158" y="37" width="30" height="26" rx="6" fill="rgba(129,199,132,0.1)" stroke="#10b981" strokeWidth="1.3"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="173" y="53" textAnchor="middle" fill="#4caf50" fontSize="8" fontFamily="var(--font-mono)" fontWeight="600">聚合</text>
+                <text x="173" y="53" textAnchor="middle" fill="#10b981" fontSize="8" fontFamily="var(--font-mono)" fontWeight="600">聚合</text>
                 {/* 输出 */}
-                <motion.path d="M191 50 L210 50" stroke="#4caf50" strokeWidth="1.3" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.5,delay:0.3}}/>
-                <motion.rect x="214" y="37" width="42" height="26" rx="6" fill="rgba(129,199,132,0.08)" stroke="#4caf50" strokeWidth="1.3"
+                <motion.path d="M191 50 L210 50" stroke="#10b981" strokeWidth="1.3" opacity="0.6" initial={{pathLength:0}} whileInView={{pathLength:1}} transition={{duration:0.5,delay:0.3}}/>
+                <motion.rect x="214" y="37" width="42" height="26" rx="6" fill="rgba(129,199,132,0.08)" stroke="#10b981" strokeWidth="1.3"
                   initial={{opacity:0}} whileInView={{opacity:1}}/>
-                <text x="235" y="53" textAnchor="middle" fill="#4caf50" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">输出</text>
+                <text x="235" y="53" textAnchor="middle" fill="#10b981" fontSize="9" fontFamily="var(--font-mono)" fontWeight="600">输出</text>
                 {/* 说明 */}
                 <text x="140" y="94" textAnchor="middle" fill="rgba(129,199,132,0.45)" fontSize="8" fontFamily="var(--font-mono)">每次只激活 2-3 个专家，其余灰色</text>
                 {/* 分隔线 */}
@@ -813,7 +813,7 @@ function Stage3() {
           <p style={{fontSize:13,color:'var(--text-muted)',marginBottom:10,fontFamily:'var(--font-mono)'}}>选择一个问题，然后点击「逐步演示」：</p>
           <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:12}}>
             {PRESET_PROMPTS.map((p,i)=>(<button key={i} onClick={()=>{setSelected(i);reset()}}
-              style={{padding:'8px 16px',fontSize:13,fontFamily:'var(--font-sans)',background:selected===i?'rgba(13,115,119,0.1)':'transparent',border:`1px solid ${selected===i?'var(--border-active)':'var(--border-subtle)'}`,borderRadius:8,color:selected===i?'var(--accent-primary)':'var(--text-secondary)',cursor:'pointer'}}>"{p.q}"</button>))}
+              style={{padding:'8px 16px',fontSize:13,fontFamily:'var(--font-sans)',background:selected===i?'rgba(45,140,240,0.1)':'transparent',border:`1px solid ${selected===i?'var(--border-active)':'var(--border-subtle)'}`,borderRadius:8,color:selected===i?'var(--accent-primary)':'var(--text-secondary)',cursor:'pointer'}}>"{p.q}"</button>))}
           </div>
           <div style={{display:'flex',gap:10}}>
             <button onClick={advance} disabled={step>=4}
@@ -863,7 +863,7 @@ function ChatBubble({role,text,delay}) {
   return (
     <motion.div style={{display:'flex',justifyContent:isUser?'flex-end':'flex-start'}}
       initial={{opacity:0,x:isUser?20:-20}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.4,delay}}>
-      <div style={{display:'inline-block',whiteSpace:'nowrap',maxWidth:'90%',padding:'10px 16px',borderRadius:isUser?'12px 12px 4px 12px':'12px 12px 12px 4px',background:isUser?'rgba(59,130,246,0.12)':'rgba(13,115,119,0.08)',border:`1px solid ${isUser?'rgba(59,130,246,0.25)':'rgba(13,115,119,0.2)'}`,fontSize:14,fontFamily:'var(--font-sans)',color:'var(--text-primary)',}}>
+      <div style={{display:'inline-block',whiteSpace:'nowrap',maxWidth:'90%',padding:'10px 16px',borderRadius:isUser?'12px 12px 4px 12px':'12px 12px 12px 4px',background:isUser?'rgba(108,92,231,0.12)':'rgba(45,140,240,0.08)',border:`1px solid ${isUser?'rgba(108,92,231,0.25)':'rgba(45,140,240,0.2)'}`,fontSize:14,fontFamily:'var(--font-sans)',color:'var(--text-primary)',}}>
         <span style={{fontSize:10,display:'block',marginBottom:2,color:isUser?'var(--accent-secondary)':'var(--accent-primary)',fontFamily:'var(--font-mono)'}}>{isUser?'用户':'LLM'}</span>{text}
       </div>
     </motion.div>
@@ -902,7 +902,7 @@ function Stage4() {
             </div>
             {/* Context Panel */}
             <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{duration:0.5,delay:0.5}} style={{marginTop:28}}>
-              <div style={{border:'1px solid rgba(13,115,119,0.2)',borderRadius:12,padding:'20px 22px',background:'rgba(13,115,119,0.04)',marginBottom:16}}>
+              <div style={{border:'1px solid rgba(45,140,240,0.2)',borderRadius:12,padding:'20px 22px',background:'rgba(45,140,240,0.04)',marginBottom:16}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
                   <span style={{fontSize:18}}>📥</span>
                   <span style={{fontFamily:'var(--font-sans)',fontSize:15,fontWeight:700,color:'var(--accent-primary)'}}>Context（上下文）</span>
@@ -910,11 +910,11 @@ function Stage4() {
                 </div>
                 <div style={{display:'flex',flexDirection:'column',gap:8}}>
                   <motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:0.55}}
-                    style={{padding:'8px 12px',background:'rgba(13,115,119,0.05)',borderRadius:6,borderLeft:'3px solid rgba(13,115,119,0.3)',fontSize:11,color:'var(--text-muted)',fontFamily:'var(--font-mono)',lineHeight:1.6}}>
+                    style={{padding:'8px 12px',background:'rgba(45,140,240,0.05)',borderRadius:6,borderLeft:'3px solid rgba(45,140,240,0.3)',fontSize:11,color:'var(--text-muted)',fontFamily:'var(--font-mono)',lineHeight:1.6}}>
                     系统提示：你是 AI 助手，请友好、准确地回答问题
                   </motion.div>
                   <motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:0.65}}
-                    style={{padding:'10px 12px',background:'rgba(13,115,119,0.04)',borderRadius:6,border:'1px solid rgba(13,115,119,0.1)'}}>
+                    style={{padding:'10px 12px',background:'rgba(45,140,240,0.04)',borderRadius:6,border:'1px solid rgba(45,140,240,0.1)'}}>
                     <div style={{fontSize:10,color:'var(--accent-primary)',fontFamily:'var(--font-mono)',marginBottom:6}}>A 轮对话历史</div>
                     <div style={{display:'flex',flexDirection:'column',gap:3}}>
                       <span style={{fontSize:11,color:'var(--text-secondary)'}}>👤 "{ROUND_A.user}"</span>
@@ -922,10 +922,10 @@ function Stage4() {
                     </div>
                   </motion.div>
                   <motion.div initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:0.75}}
-                    style={{padding:'10px 12px',background:'rgba(230,126,34,0.06)',borderRadius:6,border:'1px solid rgba(230,126,34,0.25)',position:'relative'}}>
+                    style={{padding:'10px 12px',background:'rgba(245,158,11,0.06)',borderRadius:6,border:'1px solid rgba(245,158,11,0.25)',position:'relative'}}>
                     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
                       <span style={{fontSize:10,color:'var(--accent-gold)',fontFamily:'var(--font-mono)',fontWeight:600}}>B 轮新消息</span>
-                      <span style={{fontSize:10,background:'rgba(230,126,34,0.2)',color:'var(--accent-gold)',padding:'1px 6px',borderRadius:4,fontFamily:'var(--font-mono)'}}>🆕</span>
+                      <span style={{fontSize:10,background:'rgba(245,158,11,0.2)',color:'var(--accent-gold)',padding:'1px 6px',borderRadius:4,fontFamily:'var(--font-mono)'}}>🆕</span>
                     </div>
                     <span style={{fontSize:11,color:'var(--text-secondary)'}}>👤 "{ROUND_B_USER}"</span>
                   </motion.div>
@@ -937,7 +937,7 @@ function Stage4() {
                 <span style={{fontSize:12,color:'var(--text-muted)',fontFamily:'var(--font-sans)'}}>这个「全部历史」能装多少？有上限吗？ ↓</span>
               </motion.div>
               {/* Context Window Panel */}
-              <div style={{border:'1px solid rgba(230,126,34,0.2)',borderRadius:12,padding:'20px 22px',background:'rgba(230,126,34,0.04)',marginBottom:16}}>
+              <div style={{border:'1px solid rgba(245,158,11,0.2)',borderRadius:12,padding:'20px 22px',background:'rgba(245,158,11,0.04)',marginBottom:16}}>
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
                   <span style={{fontSize:18}}>📏</span>
                   <span style={{fontFamily:'var(--font-sans)',fontSize:15,fontWeight:700,color:'var(--accent-gold)'}}>Context Window（上下文窗口）</span>
@@ -992,13 +992,13 @@ function Stage4() {
         <p style={{fontSize:13,color:'var(--text-secondary)',lineHeight:1.7,marginBottom:20}}>LLM 每次收到的内容由两类 Prompt 组成——用户看到的只是冰山一角。</p>
         <div style={{display:'flex',flexDirection:'column',gap:10}}>
           <motion.div initial={{opacity:0,y:15}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:0.15}}
-            style={{padding:'14px 18px',background:'var(--bg-deep)',borderRadius:10,border:'1px solid rgba(13,115,119,0.25)'}}>
+            style={{padding:'14px 18px',background:'var(--bg-deep)',borderRadius:10,border:'1px solid rgba(45,140,240,0.25)'}}>
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
               <span style={{fontSize:16}}>🔧</span>
               <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:'var(--accent-primary)'}}>System Prompt（系统提示词）</span>
               <span style={{fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)'}}>— 开发者设定</span>
             </div>
-            <div style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--text-secondary)',background:'rgba(13,115,119,0.06)',padding:'8px 12px',borderRadius:6,borderLeft:'3px solid var(--accent-primary)',lineHeight:1.6}}>
+            <div style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--text-secondary)',background:'rgba(45,140,240,0.06)',padding:'8px 12px',borderRadius:6,borderLeft:'3px solid var(--accent-primary)',lineHeight:1.6}}>
               你是 AI 助手，请友好、准确地回答问题。
             </div>
             <div style={{display:'flex',gap:16,marginTop:8,fontSize:10}}>
@@ -1010,7 +1010,7 @@ function Stage4() {
           <motion.div initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.25}}
             style={{textAlign:'center',fontSize:15,color:'var(--accent-gold)',fontWeight:600}}>⬇️ System Prompt 约束 User Prompt ↓</motion.div>
           <motion.div initial={{opacity:0,y:15}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:0.3}}
-            style={{padding:'14px 18px',background:'var(--bg-deep)',borderRadius:10,border:'1px solid rgba(230,126,34,0.25)'}}>
+            style={{padding:'14px 18px',background:'var(--bg-deep)',borderRadius:10,border:'1px solid rgba(245,158,11,0.25)'}}>
             <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
               <span style={{fontSize:16}}>💬</span>
               <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:'var(--accent-gold)'}}>User Prompt（用户提示词）</span>
@@ -1025,7 +1025,7 @@ function Stage4() {
           </motion.div>
         </div>
         <motion.div initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.4}}
-          style={{marginTop:14,padding:'12px 16px',background:'rgba(59,130,246,0.04)',borderRadius:8,border:'1px solid rgba(59,130,246,0.15)'}}>
+          style={{marginTop:14,padding:'12px 16px',background:'rgba(108,92,231,0.04)',borderRadius:8,border:'1px solid rgba(108,92,231,0.15)'}}>
           <div style={{fontSize:12,color:'var(--accent-secondary)',fontWeight:600,marginBottom:4}}>💡 System Prompt 每轮都重复发送吗？</div>
           <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.7}}>
             <strong style={{color:'var(--accent-secondary)'}}>是的。</strong>
@@ -1070,7 +1070,7 @@ function Stage5() {
             <p style={{fontSize:13,color:'var(--text-secondary)',lineHeight:1.7}}>没有外部工具时，模型只能基于训练数据中见过的模式猜测。它可能会编造一个看起来「合理」的答案，而不一定是真实数据。这就是所谓的「幻觉」（Hallucination）。</p>
           </div>
         </motion.div>
-        <motion.div style={{marginTop:28,textAlign:'center',padding:'16px 24px',background:'rgba(230,126,34,0.05)',borderRadius:8,border:'1px solid rgba(230,126,34,0.2)'}}
+        <motion.div style={{marginTop:28,textAlign:'center',padding:'16px 24px',background:'rgba(245,158,11,0.05)',borderRadius:8,border:'1px solid rgba(245,158,11,0.2)'}}
           initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:1.2}}>
           <p style={{fontSize:14,color:'var(--accent-gold)',fontFamily:'var(--font-sans)'}}>为了让 LLM 突破自身知识边界的限制，我们需要给它接入外部工具能力 →</p>
         </motion.div>
@@ -1163,16 +1163,16 @@ function Stage6() {
           </motion.div>}</AnimatePresence>
         </div>
         <AnimatePresence mode="wait">{step>=0&&<motion.div key={step} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
-          style={{marginTop:24,padding:'12px 20px',background:'rgba(13,115,119,0.05)',borderRadius:8,border:'1px solid var(--border-subtle)',textAlign:'center'}}>
+          style={{marginTop:24,padding:'12px 20px',background:'rgba(45,140,240,0.05)',borderRadius:8,border:'1px solid var(--border-subtle)',textAlign:'center'}}>
           <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',marginRight:8}}>步骤 {step+1}/{steps.length}</span>
           <span style={{fontSize:14,color:'var(--text-secondary)'}}>{steps[step]?.desc}</span></motion.div>}</AnimatePresence>
-        <motion.div style={{marginTop:28,padding:'16px 20px',background:'rgba(230,126,34,0.04)',borderRadius:10,border:'1px solid rgba(230,126,34,0.15)',display:'flex',gap:20,flexWrap:'wrap'}}
+        <motion.div style={{marginTop:28,padding:'16px 20px',background:'rgba(245,158,11,0.04)',borderRadius:10,border:'1px solid rgba(245,158,11,0.15)',display:'flex',gap:20,flexWrap:'wrap'}}
           initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:1}}>
           <div><span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-gold)',fontWeight:600,marginRight:6}}>MCP</span><span style={{fontSize:12,color:'var(--text-muted)'}}>标准通信协议：覆盖 Tool · Memory · IDE · Database · Skill · Browser</span></div>
           <div><span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-gold)',fontWeight:600,marginRight:6}}>RAG</span><span style={{fontSize:12,color:'var(--text-muted)'}}>检索增强生成：从知识库检索相关资料再回答</span></div>
           <div><span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-gold)',fontWeight:600,marginRight:6}}>Web Search</span><span style={{fontSize:12,color:'var(--text-muted)'}}>网络搜索：实时抓取互联网信息补充知识</span></div>
         </motion.div>
-        <motion.div style={{marginTop:20,padding:'14px 20px',background:'rgba(13,115,119,0.03)',borderRadius:8,border:'1px solid rgba(13,115,119,0.12)',textAlign:'center'}}
+        <motion.div style={{marginTop:20,padding:'14px 20px',background:'rgba(45,140,240,0.03)',borderRadius:8,border:'1px solid rgba(45,140,240,0.12)',textAlign:'center'}}
           initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:1.2}}>
           <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.8}}>
             <span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--text-muted)',marginRight:8}}>旧时代 ChatBot：</span>
@@ -1185,7 +1185,7 @@ function Stage6() {
         {/* RAG & Web Search 深入理解 */}
         <motion.div style={{marginTop:20}} initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:1.3}}>
           <button onClick={()=>setShowDetail(!showDetail)}
-            style={{display:'block',width:'100%',padding:'12px 20px',fontSize:13,fontFamily:'var(--font-sans)',fontWeight:600,background:'rgba(230,126,34,0.04)',border:'1px solid rgba(230,126,34,0.15)',borderRadius:10,color:'var(--accent-gold)',cursor:'pointer',textAlign:'center'}}>
+            style={{display:'block',width:'100%',padding:'12px 20px',fontSize:13,fontFamily:'var(--font-sans)',fontWeight:600,background:'rgba(245,158,11,0.04)',border:'1px solid rgba(245,158,11,0.15)',borderRadius:10,color:'var(--accent-gold)',cursor:'pointer',textAlign:'center'}}>
             {showDetail?'收起 ↑':'展开 ↓'}  深入理解：RAG 与 Web Search
           </button>
           <AnimatePresence>
@@ -1193,16 +1193,16 @@ function Stage6() {
               <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:'auto'}} exit={{opacity:0,height:0}} transition={{duration:0.4}} style={{overflow:'hidden'}}>
                 <div style={{display:'flex',flexDirection:'column',gap:16,marginTop:16}}>
                   {/* RAG 卡片 */}
-                  <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{delay:0.15}} style={{padding:'18px 20px',background:'rgba(59,130,246,0.04)',border:'1px solid rgba(59,130,246,0.2)',borderRadius:12}}>
+                  <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{delay:0.15}} style={{padding:'18px 20px',background:'rgba(108,92,231,0.04)',border:'1px solid rgba(108,92,231,0.2)',borderRadius:12}}>
                     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
                       <span style={{fontSize:18}}>📚</span>
                       <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:'var(--accent-secondary)'}}>RAG 检索增强生成</span>
                     </div>
                     <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.8,marginBottom:10}}>给 LLM 配一个「资料库」——回答前先去库里翻相关资料，拿着资料再回答，回答有据可查。</p>
-                    <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,flexWrap:'wrap',padding:'10px 14px',background:'rgba(59,130,246,0.04)',borderRadius:8,marginBottom:10,fontSize:11}}>
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,flexWrap:'wrap',padding:'10px 14px',background:'rgba(108,92,231,0.04)',borderRadius:8,marginBottom:10,fontSize:11}}>
                       <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-secondary)'}}>用户提问</span>
                       <span style={{color:'var(--text-muted)'}}>→</span>
-                      <span style={{fontFamily:'var(--font-mono)',color:'#4fc3f7',background:'rgba(59,130,246,0.1)',padding:'2px 8px',borderRadius:4}}>向量检索</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'#4fc3f7',background:'rgba(108,92,231,0.1)',padding:'2px 8px',borderRadius:4}}>向量检索</span>
                       <span style={{color:'var(--text-muted)'}}>→</span>
                       <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-secondary)'}}>匹配文档</span>
                       <span style={{color:'var(--text-muted)'}}>→</span>
@@ -1211,22 +1211,22 @@ function Stage6() {
                       <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-gold)'}}>LLM 回答</span>
                     </div>
                     <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
-                      <span style={{fontSize:10,color:'#4fc3f7',background:'rgba(59,130,246,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 减少幻觉</span>
-                      <span style={{fontSize:10,color:'#4fc3f7',background:'rgba(59,130,246,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 无需重训模型</span>
-                      <span style={{fontSize:10,color:'#4fc3f7',background:'rgba(59,130,246,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 私有知识库</span>
+                      <span style={{fontSize:10,color:'#4fc3f7',background:'rgba(108,92,231,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 减少幻觉</span>
+                      <span style={{fontSize:10,color:'#4fc3f7',background:'rgba(108,92,231,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 无需重训模型</span>
+                      <span style={{fontSize:10,color:'#4fc3f7',background:'rgba(108,92,231,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 私有知识库</span>
                     </div>
                   </motion.div>
                   {/* Web Search 卡片 */}
-                  <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{delay:0.25}} style={{padding:'18px 20px',background:'rgba(230,126,34,0.04)',border:'1px solid rgba(230,126,34,0.2)',borderRadius:12}}>
+                  <motion.div initial={{opacity:0,x:-20}} animate={{opacity:1,x:0}} transition={{delay:0.25}} style={{padding:'18px 20px',background:'rgba(245,158,11,0.04)',border:'1px solid rgba(245,158,11,0.2)',borderRadius:12}}>
                     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
                       <span style={{fontSize:18}}>🌐</span>
                       <span style={{fontFamily:'var(--font-sans)',fontSize:14,fontWeight:700,color:'var(--accent-gold)'}}>Web Search 网络搜索</span>
                     </div>
                     <p style={{fontSize:12,color:'var(--text-secondary)',lineHeight:1.8,marginBottom:10}}>让 LLM 实时上网搜索最新信息——生成搜索关键词，调用搜索引擎 API，综合搜索结果后回答。</p>
-                    <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,flexWrap:'wrap',padding:'10px 14px',background:'rgba(230,126,34,0.04)',borderRadius:8,marginBottom:10,fontSize:11}}>
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:6,flexWrap:'wrap',padding:'10px 14px',background:'rgba(245,158,11,0.04)',borderRadius:8,marginBottom:10,fontSize:11}}>
                       <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-gold)'}}>用户提问</span>
                       <span style={{color:'var(--text-muted)'}}>→</span>
-                      <span style={{fontFamily:'var(--font-mono)',color:'#ffb74d',background:'rgba(230,126,34,0.1)',padding:'2px 8px',borderRadius:4}}>生成搜索词</span>
+                      <span style={{fontFamily:'var(--font-mono)',color:'#ffb74d',background:'rgba(245,158,11,0.1)',padding:'2px 8px',borderRadius:4}}>生成搜索词</span>
                       <span style={{color:'var(--text-muted)'}}>→</span>
                       <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-gold)'}}>搜索引擎 API</span>
                       <span style={{color:'var(--text-muted)'}}>→</span>
@@ -1235,13 +1235,13 @@ function Stage6() {
                       <span style={{fontFamily:'var(--font-mono)',color:'var(--accent-gold)'}}>LLM 回答</span>
                     </div>
                     <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
-                      <span style={{fontSize:10,color:'#ffb74d',background:'rgba(230,126,34,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 实时信息</span>
-                      <span style={{fontSize:10,color:'#ffb74d',background:'rgba(230,126,34,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 开放网络</span>
-                      <span style={{fontSize:10,color:'#ffb74d',background:'rgba(230,126,34,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 覆盖时效场景</span>
+                      <span style={{fontSize:10,color:'#ffb74d',background:'rgba(245,158,11,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 实时信息</span>
+                      <span style={{fontSize:10,color:'#ffb74d',background:'rgba(245,158,11,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 开放网络</span>
+                      <span style={{fontSize:10,color:'#ffb74d',background:'rgba(245,158,11,0.06)',padding:'3px 8px',borderRadius:4}}>✓ 覆盖时效场景</span>
                     </div>
                   </motion.div>
                   {/* 对比 */}
-                  <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.35}} style={{padding:'12px 16px',background:'rgba(13,115,119,0.03)',borderRadius:8,border:'1px solid rgba(13,115,119,0.1)',textAlign:'center'}}>
+                  <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.35}} style={{padding:'12px 16px',background:'rgba(45,140,240,0.03)',borderRadius:8,border:'1px solid rgba(45,140,240,0.1)',textAlign:'center'}}>
                     <span style={{fontSize:11,color:'var(--text-muted)'}}>
                       RAG：<strong style={{color:'var(--accent-secondary)'}}>可控但有限</strong>（预设知识库）
                       <span style={{margin:'0 12px',color:'var(--border-subtle)'}}>|</span>
@@ -1323,7 +1323,7 @@ function Stage7() {
           {/* Step 3: 子 Agent Workflow */}
           <AnimatePresence>{step>=3 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center',width:'100%'}}>
             <Connector6 active={true}/>
-            <motion.div style={{border:'2px solid rgba(13,115,119,0.2)',borderRadius:14,padding:'16px 20px 20px',background:'rgba(13,115,119,0.03)',position:'relative',width:'100%',maxWidth:380}}>
+            <motion.div style={{border:'2px solid rgba(45,140,240,0.2)',borderRadius:14,padding:'16px 20px 20px',background:'rgba(45,140,240,0.03)',position:'relative',width:'100%',maxWidth:380}}>
               <div style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',marginBottom:12,textAlign:'center',fontWeight:600}}>子 Agent：Weather Workflow（A→B→C）</div>
               <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:0}}>
                 {/* Step A */}
@@ -1358,14 +1358,14 @@ function Stage7() {
           {/* Step 5: 输出 */}
           <AnimatePresence>{step>=5 && <motion.div initial={{opacity:0,y:-15}} animate={{opacity:1,y:0}} transition={{duration:0.4}} style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
             <Connector6 active={true}/>
-            <div style={{display:'inline-block',fontFamily:'var(--font-mono)',fontSize:13,color:'var(--text-primary)',border:'1px solid var(--border-active)',borderRadius:8,overflow:'hidden',boxShadow:'0 0 20px rgba(13,115,119,0.08)'}}>
-              <div style={{display:'flex'}}>{['日期','天气','温度'].map(h=><div key={h} style={{padding:'8px 18px',background:'rgba(13,115,119,0.08)',fontSize:12,fontWeight:600,color:'var(--accent-primary)',borderRight:'1px solid var(--border-subtle)'}}>{h}</div>)}</div>
+            <div style={{display:'inline-block',fontFamily:'var(--font-mono)',fontSize:13,color:'var(--text-primary)',border:'1px solid var(--border-active)',borderRadius:8,overflow:'hidden',boxShadow:'0 0 20px rgba(45,140,240,0.08)'}}>
+              <div style={{display:'flex'}}>{['日期','天气','温度'].map(h=><div key={h} style={{padding:'8px 18px',background:'rgba(45,140,240,0.08)',fontSize:12,fontWeight:600,color:'var(--accent-primary)',borderRight:'1px solid var(--border-subtle)'}}>{h}</div>)}</div>
               {[['5/21','☀️ 晴','24°C'],['5/22','⛅ 阴','20°C'],['5/23','🌧️ 小雨','18°C']].map((row,i)=>(<div key={i} style={{display:'flex',borderTop:'1px solid var(--border-subtle)'}}>{row.map((cell,j)=>(<div key={j} style={{padding:'6px 18px',fontSize:12,color:'var(--text-secondary)',borderRight:j<2?'1px solid var(--border-subtle)':'none'}}>{cell}</div>))}</div>))}
             </div>
           </motion.div>}</AnimatePresence>
         </div>
         <AnimatePresence mode="wait">{step>=0&&<motion.div key={step} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
-          style={{marginTop:24,padding:'12px 20px',background:'rgba(13,115,119,0.05)',borderRadius:8,border:'1px solid var(--border-subtle)',textAlign:'center'}}>
+          style={{marginTop:24,padding:'12px 20px',background:'rgba(45,140,240,0.05)',borderRadius:8,border:'1px solid var(--border-subtle)',textAlign:'center'}}>
           <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',marginRight:8}}>步骤 {step>=3&&wfStep>=0?`${step+1}.${wfStep+1}`:step+1}/{steps.length}</span>
           <span style={{fontSize:14,color:'var(--text-secondary)'}}>{step===3&&wfStep>=0?wf[wfStep].label+' — '+wf[wfStep].tool:steps[step]?.desc}</span></motion.div>}</AnimatePresence>
       </motion.div>
@@ -1380,8 +1380,8 @@ const skillInfo={table:{name:'表格 Skill',desc:'结构化数据展示，适合
 function TableView8({data}) {
   return (
     <motion.div initial={{opacity:0,scale:0.95}} animate={{opacity:1,scale:1}} exit={{opacity:0,scale:0.95}} transition={{duration:0.3}}
-      style={{border:'1px solid var(--border-active)',borderRadius:10,overflow:'hidden',boxShadow:'0 0 24px rgba(13,115,119,0.08)'}}>
-      <div style={{display:'flex',background:'rgba(13,115,119,0.1)'}}>{['日期','天气','温度'].map(h=><div key={h} style={{padding:'10px 24px',fontSize:13,fontWeight:600,fontFamily:'var(--font-mono)',color:'var(--accent-primary)',borderRight:'1px solid var(--border-subtle)',flex:1,textAlign:'center'}}>{h}</div>)}</div>
+      style={{border:'1px solid var(--border-active)',borderRadius:10,overflow:'hidden',boxShadow:'0 0 24px rgba(45,140,240,0.08)'}}>
+      <div style={{display:'flex',background:'rgba(45,140,240,0.1)'}}>{['日期','天气','温度'].map(h=><div key={h} style={{padding:'10px 24px',fontSize:13,fontWeight:600,fontFamily:'var(--font-mono)',color:'var(--accent-primary)',borderRight:'1px solid var(--border-subtle)',flex:1,textAlign:'center'}}>{h}</div>)}</div>
       {data.map((row,i)=>(<div key={i} style={{display:'flex',borderTop:'1px solid var(--border-subtle)'}}>{[row.date,`${row.icon} ${row.weather}`,`${row.temp}°C`].map((cell,j)=>(<div key={j} style={{padding:'8px 24px',fontSize:13,fontFamily:'var(--font-mono)',color:'var(--text-secondary)',borderRight:j<2?'1px solid var(--border-subtle)':'none',flex:1,textAlign:'center'}}>{cell}</div>))}</div>))}
     </motion.div>
   );
@@ -1392,7 +1392,7 @@ function CardView8({data}) {
       style={{display:'flex',gap:16,flexWrap:'wrap',justifyContent:'center'}}>
       {data.map((row,i)=>(<motion.div key={i} initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{delay:i*0.1}}
         style={{width:160,padding:'20px 16px',background:'linear-gradient(145deg,var(--bg-elevated),var(--bg-card))',border:'1px solid var(--border-subtle)',borderRadius:14,textAlign:'center',boxShadow:'0 4px 20px rgba(0,0,0,0.2)'}}
-        whileHover={{y:-4,boxShadow:'0 8px 30px rgba(13,115,119,0.12)'}}>
+        whileHover={{y:-4,boxShadow:'0 8px 30px rgba(45,140,240,0.12)'}}>
         <div style={{fontSize:36,marginBottom:8}}>{row.icon}</div>
         <div style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--text-muted)',marginBottom:4}}>{row.date}</div>
         <div style={{fontFamily:'var(--font-sans)',fontSize:18,fontWeight:700,color:'var(--text-primary)',marginBottom:4}}>{row.weather}</div>
@@ -1495,8 +1495,8 @@ function Stage8() {
             <motion.div style={{border:'1px solid rgba(186,104,200,0.2)',borderRadius:12,padding:'16px 20px',background:'rgba(186,104,200,0.03)',maxWidth:420,width:'100%'}}>
               <div style={{fontSize:11,color:'#ba68c8',fontFamily:'var(--font-mono)',fontWeight:600,marginBottom:10,textAlign:'center'}}>💡 LLM 收到的完整 Prompt</div>
               <div style={{display:'flex',flexDirection:'column',gap:6}}>
-                <div style={{padding:'6px 10px',background:'rgba(13,115,119,0.04)',borderRadius:6,borderLeft:'3px solid var(--text-muted)',fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',lineHeight:1.5}}>System Prompt：你是 AI 助手，友好回答…</div>
-                <div style={{padding:'6px 10px',background:'rgba(59,130,246,0.04)',borderRadius:6,borderLeft:'3px solid var(--accent-secondary)',fontSize:10,color:'var(--accent-secondary)',fontFamily:'var(--font-mono)',lineHeight:1.5}}>天气数据：{'{date:"5/21", weather:"晴", temp:24}…'}</div>
+                <div style={{padding:'6px 10px',background:'rgba(45,140,240,0.04)',borderRadius:6,borderLeft:'3px solid var(--text-muted)',fontSize:10,color:'var(--text-muted)',fontFamily:'var(--font-mono)',lineHeight:1.5}}>System Prompt：你是 AI 助手，友好回答…</div>
+                <div style={{padding:'6px 10px',background:'rgba(108,92,231,0.04)',borderRadius:6,borderLeft:'3px solid var(--accent-secondary)',fontSize:10,color:'var(--accent-secondary)',fontFamily:'var(--font-mono)',lineHeight:1.5}}>天气数据：{'{date:"5/21", weather:"晴", temp:24}…'}</div>
                 <div style={{padding:'8px 10px',background:'rgba(186,104,200,0.08)',borderRadius:6,borderLeft:'3px solid #ba68c8',fontSize:10,color:'#ba68c8',fontFamily:'var(--font-mono)',lineHeight:1.6,whiteSpace:'pre-line'}}>{'# Weather Beautifier\n1. 读取天气数据\n2. 根据偏好选择展示模式\n   （表格 / 卡片 / 图表）\n3. 应用 UI 模板渲染\n4. 返回格式化结果'}</div>
               </div>
               <p style={{fontSize:10,color:'var(--text-muted)',lineHeight:1.6,marginTop:10,textAlign:'center'}}>Skill 本质：一段<strong style={{color:'#ba68c8'}}>文本化的流程指令</strong>，注入上下文后 LLM 就"学会"了这个能力</p>
@@ -1509,10 +1509,10 @@ function Stage8() {
           </motion.div>}</AnimatePresence>
         </div>
         <AnimatePresence mode="wait">{step>=0&&<motion.div key={step} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
-          style={{marginTop:24,padding:'12px 20px',background:'rgba(13,115,119,0.05)',borderRadius:8,border:'1px solid var(--border-subtle)',textAlign:'center'}}>
+          style={{marginTop:24,padding:'12px 20px',background:'rgba(45,140,240,0.05)',borderRadius:8,border:'1px solid var(--border-subtle)',textAlign:'center'}}>
           <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-primary)',marginRight:8}}>步骤 {step+1}/{steps.length}</span>
           <span style={{fontSize:14,color:'var(--text-secondary)'}}>{steps[step]?.desc}</span></motion.div>}</AnimatePresence>
-        <motion.div style={{marginTop:20,padding:'12px 18px',background:'rgba(13,115,119,0.03)',borderRadius:8,border:'1px solid rgba(13,115,119,0.1)',textAlign:'center'}}
+        <motion.div style={{marginTop:20,padding:'12px 18px',background:'rgba(45,140,240,0.03)',borderRadius:8,border:'1px solid rgba(45,140,240,0.1)',textAlign:'center'}}
           initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{delay:0.8}}>
           <p style={{fontSize:11,color:'var(--text-muted)',fontFamily:'var(--font-mono)',lineHeight:1.8}}>
             LLM 生成 skill call → <strong style={{color:'var(--accent-gold)'}}>Agent Runtime 调度</strong> → <strong style={{color:'#ba68c8'}}>Skill System 执行</strong>（通过 MCP 标准协议通信）
@@ -1526,7 +1526,7 @@ function Stage8() {
         <p style={{fontSize:11,color:'var(--text-muted)',textAlign:'center',marginBottom:20,lineHeight:1.6}}>同一个 Skill，不同展示模式——这只是冰山一角。实际系统中 Skill 还可负责 PPT、Word、数据可视化等完全不同类型的输出。</p>
         <div style={{display:'flex',justifyContent:'center',gap:10,marginBottom:24,flexWrap:'wrap'}}>
           {Object.keys(skillInfo).map(key=>(<motion.button key={key} onClick={()=>setMode(key)}
-            style={{padding:'10px 20px',fontSize:14,fontFamily:'var(--font-sans)',fontWeight:mode===key?600:400,background:mode===key?'rgba(13,115,119,0.1)':'transparent',border:`2px solid ${mode===key?'var(--accent-primary)':'var(--border-subtle)'}`,borderRadius:10,color:mode===key?'var(--accent-primary)':'var(--text-secondary)',cursor:'pointer',display:'flex',alignItems:'center',gap:6}}
+            style={{padding:'10px 20px',fontSize:14,fontFamily:'var(--font-sans)',fontWeight:mode===key?600:400,background:mode===key?'rgba(45,140,240,0.1)':'transparent',border:`2px solid ${mode===key?'var(--accent-primary)':'var(--border-subtle)'}`,borderRadius:10,color:mode===key?'var(--accent-primary)':'var(--text-secondary)',cursor:'pointer',display:'flex',alignItems:'center',gap:6}}
             whileHover={{scale:1.04}} whileTap={{scale:0.97}}>
             <span>{skillInfo[key].icon}</span><span>{skillInfo[key].name}</span></motion.button>))}
         </div>
@@ -1565,7 +1565,7 @@ function StageAgentTypes() {
         <span style={{display:'inline-block',fontFamily:'var(--font-mono)',fontSize:12,color:'var(--accent-primary)',letterSpacing:3,textTransform:'uppercase',marginBottom:16,padding:'4px 14px',border:'1px solid var(--border-active)',borderRadius:20}}>阶段 8.5</span>
         <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>Agent 的分化</h2>
         <p style={{fontSize:18,color:'var(--accent-gold)',fontWeight:500,marginBottom:16}}>为什么市面上有不同的 Agent 产品？</p>
-        <motion.div style={{display:'inline-block',padding:'12px 24px',background:'rgba(13,115,119,0.04)',border:'1px solid rgba(13,115,119,0.15)',borderRadius:12,marginBottom:20}}
+        <motion.div style={{display:'inline-block',padding:'12px 24px',background:'rgba(45,140,240,0.04)',border:'1px solid rgba(45,140,240,0.15)',borderRadius:12,marginBottom:20}}
           initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}}>
           <p style={{fontFamily:'var(--font-mono)',fontSize:14,color:'var(--text-secondary)',lineHeight:1.8}}>
             Agent = <strong style={{color:'var(--accent-primary)'}}>System Prompt</strong> + <strong style={{color:'var(--accent-secondary)'}}>LLM</strong> + <strong style={{color:'var(--accent-gold)'}}>Tools</strong> + <strong style={{color:'#ba68c8'}}>Skills</strong> + <strong style={{color:'#ff7043'}}>Workflow</strong> + <strong style={{color:'#b388ff'}}>Memory</strong>
@@ -1669,7 +1669,7 @@ function StageTips() {
   return (
     <SectionWrapper id="stage-tips">
       <div style={{marginBottom:40,textAlign:'center'}}>
-        <span style={{display:'inline-block',fontFamily:'var(--font-mono)',fontSize:12,color:'var(--accent-gold)',letterSpacing:3,textTransform:'uppercase',marginBottom:16,padding:'4px 14px',border:'1px solid rgba(230,126,34,0.3)',borderRadius:20}}>Tips</span>
+        <span style={{display:'inline-block',fontFamily:'var(--font-mono)',fontSize:12,color:'var(--accent-gold)',letterSpacing:3,textTransform:'uppercase',marginBottom:16,padding:'4px 14px',border:'1px solid rgba(245,158,11,0.3)',borderRadius:20}}>Tips</span>
         <h2 style={{fontFamily:'var(--font-sans)',fontSize:'clamp(24px,4vw,34px)',fontWeight:700,marginTop:20,marginBottom:12}}>Tips & 资源</h2>
         <p style={{fontSize:16,color:'var(--text-secondary)',maxWidth:560,margin:'0 auto',lineHeight:1.8}}>使用技巧 + Prompt 模板 + 实用工具链接，让 AI 用得更顺手。</p>
       </div>
@@ -1706,11 +1706,11 @@ function StageTips() {
               <motion.a key={i} href={link.url} target="_blank" rel="noopener"
                 initial={{opacity:0,x:20}} whileInView={{opacity:1,x:0}} viewport={{once:true}} transition={{duration:0.4,delay:i*0.08}}
                 style={{display:'flex',alignItems:'center',gap:12,padding:'14px 16px',textDecoration:'none',borderRadius:10,color:'var(--text-primary)',border:'1px solid transparent'}}
-                whileHover={{background:'rgba(59,130,246,0.04)',borderColor:'rgba(59,130,246,0.15)',x:3}}>
+                whileHover={{background:'rgba(108,92,231,0.04)',borderColor:'rgba(108,92,231,0.15)',x:3}}>
                 <span style={{fontSize:22,flexShrink:0}}>{link.icon}</span>
                 <div style={{flex:1,minWidth:0}}>
                   <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:2}}>
-                    <span style={{fontSize:10,fontFamily:'var(--font-mono)',color:'var(--accent-secondary)',padding:'1px 6px',background:'rgba(59,130,246,0.08)',borderRadius:4}}>{link.label}</span>
+                    <span style={{fontSize:10,fontFamily:'var(--font-mono)',color:'var(--accent-secondary)',padding:'1px 6px',background:'rgba(108,92,231,0.08)',borderRadius:4}}>{link.label}</span>
                     <span style={{fontSize:13,fontWeight:600,color:'var(--text-primary)',whiteSpace:'nowrap'}}>{link.name}</span>
                   </div>
                   <div style={{fontSize:11,color:'var(--text-muted)'}}>{link.desc}</div>
