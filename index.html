@@ -1806,11 +1806,13 @@ function StageTips() {
 function App() {
   const { activeId, scrollToStage, STAGE_IDS } = useActiveStage();
   const progress = useScrollProgress();
+  const { theme, toggle } = useTheme();
   const [glossaryOpen, setGlossaryOpen] = useState(false);
   const glossaryNavigate = useGlossaryNavigate(() => setGlossaryOpen(false));
 
   return (
     <>
+      <ThemeToggle theme={theme} onToggle={toggle} />
       <GlossaryButton open={glossaryOpen} onClick={() => setGlossaryOpen(!glossaryOpen)} />
       <AnimatePresence>
         {glossaryOpen && <GlossaryPanel onClose={() => setGlossaryOpen(false)} onNavigate={glossaryNavigate} />}
